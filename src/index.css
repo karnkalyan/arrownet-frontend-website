@@ -1,0 +1,557 @@
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════
+   ARROWNET DESIGN SYSTEM v4 — Brand Foundation
+   Brand Colors: Purple (#2D0A6E), Red (#E30613), Gold (#FFD700)
+   Primary: Purple | Secondary: Red | Accent: Gold
+   Headings: Poppins | Body: Inter
+   ═══════════════════════════════════════════════ */
+
+/* Tailwind v4 Theme Extension */
+@theme {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-accent: var(--accent);
+}
+
+/* ─── CSS Custom Properties ─── */
+:root {
+  --primary: #4c08cd;
+  --secondary: #ed060d;
+  --accent: #eecf00;
+  --border-color: rgba(15, 23, 42, 0.06);
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.07);
+  --shadow-xl: 0 20px 48px rgba(15, 23, 42, 0.10);
+  --shadow-glow: 0 0 20px rgba(45, 10, 110, 0.15);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ─── Base Reset ─── */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--text-main);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+  line-height: 1.65;
+  font-size: 16px;
+}
+
+/* ─── Typography ─── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.text-fluid-h1 {
+  font-size: clamp(2.25rem, 4vw + 1rem, 4.5rem);
+  line-height: 1.1;
+}
+
+.text-fluid-h2 {
+  font-size: clamp(1.75rem, 3vw + 0.5rem, 3rem);
+  line-height: 1.15;
+}
+
+.text-fluid-h3 {
+  font-size: clamp(1.25rem, 2vw + 0.5rem, 2rem);
+  line-height: 1.25;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8fafc;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(to bottom, var(--primary), var(--secondary));
+  border-radius: 10px;
+}
+
+/* ─── Gradient Text ─── */
+.gradient-text {
+  background: linear-gradient(135deg, var(--secondary), var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ═══════════════════════════════════════════════
+   COMPONENT SYSTEM
+   ═══════════════════════════════════════════════ */
+@layer components {
+
+/* ─── Premium Buttons ─── */
+.btn-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.3s var(--ease-out);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.btn-premium-primary {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+}
+
+.btn-premium-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+}
+
+.btn-premium-secondary {
+  background: white;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-premium-secondary:hover {
+  border-color: var(--primary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── Premium Cards ─── */
+.card-premium {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.35s var(--ease-out);
+  position: relative;
+}
+
+.card-premium:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+  border-color: rgba(227, 6, 19, 0.15);
+}
+
+/* ─── Section Spacing ─── */
+.section-premium {
+  padding: 5rem 0;
+}
+
+/* ─── Inputs ─── */
+.input-premium {
+  display: block;
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 0.875rem 1.25rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--text-main);
+  outline: none;
+  transition: all 0.2s var(--ease-out);
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.input-premium::placeholder {
+  color: #94a3b8;
+  opacity: 0.6;
+}
+
+.input-premium:focus {
+  border-color: var(--primary);
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(227, 6, 19, 0.1);
+  transform: translateY(-1px);
+}
+
+/* Label fix - ensure labels stay above inputs without overlapping */
+.space-y-2 label {
+  display: block;
+  margin-bottom: 0.5rem;
+  pointer-events: none;
+}
+
+.space-y-6 label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+/* ─── Glass Panels ─── */
+.glass {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-md);
+}
+
+/* ─── Data Tables ─── */
+.table-premium {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+.table-premium th {
+  text-align: left;
+  padding: 1rem 1.5rem;
+  background: #f8fafc;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.table-premium td {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.875rem;
+  color: #475569;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.table-premium tr:last-child td {
+  border-bottom: none;
+}
+
+.table-premium tr:hover td {
+  background: #fef2f2;
+  color: #0f172a;
+}
+}
+
+/* ─── Badges ─── */
+.badge-premium {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.badge-premium-orange {
+  background: rgba(227, 6, 19, 0.08);
+  color: var(--primary);
+  border-color: rgba(227, 6, 19, 0.2);
+}
+
+.badge-premium-red {
+  background: rgba(227, 6, 19, 0.08);
+  color: var(--primary);
+  border-color: rgba(227, 6, 19, 0.2);
+}
+
+.badge-premium-green {
+  background: rgba(34, 197, 94, 0.08);
+  color: #22c55e;
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.badge-premium-blue {
+  background: rgba(45, 10, 110, 0.08);
+  color: var(--secondary);
+  border-color: rgba(45, 10, 110, 0.2);
+}
+
+/* ═══════════════════════════════════════════════
+   UTILITY CLASSES
+   ═══════════════════════════════════════════════ */
+
+/* Particle canvas */
+#particle-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.sidebar-transition {
+  transition: width 0.3s ease, transform 0.3s ease;
+}
+
+/* GSAP reveal helpers — NOTE: These are ONLY used when GSAP applies them,
+   not as default states. Elements should be visible by default. */
+.reveal-up {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.reveal-in {
+  opacity: 0;
+  transform: scale(0.97);
+}
+
+/* Hero particles */
+.hero-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Typewriter */
+.typewriter-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  background: var(--primary);
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+/* Announcement bar */
+.announcement-bar {
+  background: linear-gradient(90deg, #E30613, #2D0A6E, #E30613);
+}
+
+/* Progress bar */
+.progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #E30613, #2D0A6E);
+  transition: width 1s ease;
+}
+
+/* Shimmer loading */
+.shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ═══════════════════════════════════════════════
+   VISIBILITY SAFETY NET — Prevent GSAP from 
+   leaving elements invisible if animations fail
+   ═══════════════════════════════════════════════ */
+
+/*
+  All animated elements must use gsap.fromTo()
+  This guarantees visibility regardless of animation state.
+  The following selectors ensure fallback visibility.
+*/
+.value-card,
+.service-reveal-card,
+.tech-card,
+.contact-info-card,
+.support-card,
+.career-cta,
+.contact-section,
+.stat-card,
+.feature-item,
+.sla-card,
+.related-card,
+.package-reveal,
+.scroll-reveal,
+.mission-card,
+.timeline-item,
+.contact-hero-item,
+.contact-reveal,
+.about-hero-content>* {
+  /* Do NOT set opacity: 0 here — let gsap.fromTo() handle it */
+}
+
+/* ═══════════════════════════════════════════════
+   ANIMATIONS
+   ═══════════════════════════════════════════════ */
+
+@keyframes blink {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes pulse-glow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(227, 6, 19, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 20px rgba(227, 6, 19, 0.6);
+  }
+}
+
+@keyframes pulse-green {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(34, 197, 94, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 16px rgba(34, 197, 94, 0.6);
+  }
+}
+
+@keyframes pulse-red {
+
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(227, 6, 19, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 16px rgba(227, 6, 19, 0.6);
+  }
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-pulse-green {
+  animation: pulse-green 2s ease-in-out infinite;
+}
+
+.animate-pulse-red {
+  animation: pulse-red 2s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 20s linear infinite;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.5s ease forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.5s ease forwards;
+}
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE ADJUSTMENTS
+   ═══════════════════════════════════════════════ */
+
+@media (max-width: 768px) {
+  .section-premium {
+    padding: 3rem 0;
+  }
+
+  .card-premium {
+    padding: 1.25rem;
+  }
+
+  .btn-premium {
+    padding: 0.625rem 1.25rem;
+    font-size: 0.8125rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-premium {
+    padding: 6rem 0;
+  }
+}
