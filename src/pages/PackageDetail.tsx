@@ -152,14 +152,51 @@ export default function PackageDetail() {
                    </div>
                 ))}
               </div>
-              <div className="p-6 bg-slate-50 rounded-[1.5rem] mb-10 border border-slate-100">
+              <div className="p-6 bg-slate-50 rounded-[1.5rem] border border-slate-100">
                 <p className="text-[11px] text-slate-500 leading-relaxed italic">
                    * These packages are intended for residential/business use only. Fair Usage Policy is applicable. 
                    ONU Rental and Deposit are standard for new installations.
                 </p>
               </div>
-              <button className="btn-premium btn-premium-primary !w-full !py-6 text-xl tracking-tight !rounded-[1.5rem] shadow-xl shadow-primary/20">Subscribe Now</button>
             </div>
+
+            {/* Grand Total Calculation Card */}
+            {activeTier && (
+              <div className="card-premium bg-slate-900 text-white !p-10 border-slate-900 shadow-2xl z-10 relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-3xl -mr-16 -mt-16" />
+                <h3 className="text-xl font-black mb-8 flex items-center gap-2">
+                  <CreditCard size={20} className="text-primary" /> Estimated Total
+                </h3>
+                
+                <div className="space-y-4 mb-8 relative">
+                   <div className="flex justify-between items-center text-sm">
+                      <span className="text-slate-400 font-medium">Plan Charge ({activeTier.duration} {activeTier.durationUnit})</span>
+                      <span className="text-white font-bold">Rs. {activeTier.taxIncPrice?.toLocaleString() || '0'}</span>
+                   </div>
+                   <div className="flex justify-between items-center text-sm pb-6 border-b border-white/10">
+                      <span className="text-slate-400 font-medium">Setup & Hardware</span>
+                      <span className="text-white font-bold">
+                        Rs. {setupCharges.filter(c => c.category === 'Internet').reduce((acc, c) => acc + parseInt(c.price.replace(/[^0-9]/g, '') || '0', 10), 0).toLocaleString()}
+                      </span>
+                   </div>
+                   <div className="flex justify-between items-end pt-2">
+                      <div>
+                        <div className="text-[10px] text-primary font-black uppercase tracking-widest mb-1">Grand Total</div>
+                        <div className="text-4xl font-black text-white tracking-tight" style={{ fontFamily: 'Poppins' }}>
+                          Rs. {(
+                            (activeTier.taxIncPrice || 0) + 
+                            setupCharges.filter(c => c.category === 'Internet').reduce((acc, c) => acc + parseInt(c.price.replace(/[^0-9]/g, '') || '0', 10), 0)
+                          ).toLocaleString()}
+                        </div>
+                      </div>
+                   </div>
+                </div>
+
+                <button className="btn-premium btn-premium-primary !w-full !py-5 text-lg tracking-tight !rounded-[1.5rem] shadow-xl shadow-primary/20 relative z-10">
+                  Proceed to Subscribe
+                </button>
+              </div>
+            )}
 
             {/* Support Widget */}
             <div className="card-premium !p-10 bg-white border-slate-100 relative z-10 shadow-xl shadow-slate-200/50">
