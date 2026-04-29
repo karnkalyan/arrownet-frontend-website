@@ -3,14 +3,46 @@ import { useStore } from '../store/useStore';
 import { Wifi, ArrowRight, ShieldCheck, Zap, Globe, CreditCard, ChevronDown } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function Tariff() {
   const { packages, setupCharges, tariffNotes, taxRate, fetchInitialData } = useStore();
 
   useEffect(() => {
     fetchInitialData();
-    gsap.from(".tariff-card", { y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power4.out" });
   }, []);
+
+  useEffect(() => {
+    if (packages.length > 0) {
+      const timer = setTimeout(() => {
+        // Clear any existing triggers
+        ScrollTrigger.getAll().forEach(t => t.kill());
+
+        const cards = gsap.utils.toArray('.tariff-card');
+        if (cards.length === 0) return;
+
+        cards.forEach((card: any) => {
+          gsap.fromTo(card, 
+            { y: 60, opacity: 0 },
+            { 
+              y: 0, 
+              opacity: 1, 
+              duration: 1, 
+              ease: "power4.out",
+              scrollTrigger: {
+                trigger: card,
+                start: "top 85%",
+                toggleActions: "play none none none"
+              }
+            }
+          );
+        });
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [packages]);
 
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 overflow-hidden">
@@ -31,7 +63,7 @@ export default function Tariff() {
         {/* Dynamic Package List */}
         <div className="space-y-12">
           {packages.map((pkg) => (
-            <div key={pkg.id} className="tariff-card bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 hover:border-primary/20 transition-all group overflow-hidden relative">
+            <div key={pkg.id} className="tariff-card opacity-0 bg-white rounded-[2.5rem] p-8 md:p-12 border border-slate-100 shadow-xl shadow-slate-200/50 hover:border-primary/20 transition-all group overflow-hidden relative">
               {/* Background Glow */}
               <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32 transition-all group-hover:bg-primary/10" />
               

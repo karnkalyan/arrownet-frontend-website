@@ -7,20 +7,34 @@ import {
   Signal, Lock, Star, Play
 } from 'lucide-react';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function PackageDetail() {
   const { id } = useParams();
   const { packages, setupCharges, taxRate, fetchInitialData } = useStore();
   const [activeTier, setActiveTier] = useState<any>(null);
-
   const pkg = packages.find(p => p.id === Number(id));
 
   useEffect(() => {
-    // Ensure we have latest data
     fetchInitialData();
     window.scrollTo(0, 0);
-    gsap.from(".detail-animate", { y: 30, opacity: 0, duration: 0.8, stagger: 0.1, ease: "power4.out" });
   }, []);
+
+  useEffect(() => {
+    if (packages.length > 0) {
+      const timer = setTimeout(() => {
+        if (document.querySelectorAll('.detail-animate').length > 0) {
+          gsap.fromTo(".detail-animate", 
+            { y: 30, opacity: 0 },
+            { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power4.out" }
+          );
+        }
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [packages]);
 
   useEffect(() => {
     if (pkg && pkg.pricingTiers?.length > 0) {
@@ -48,7 +62,7 @@ export default function PackageDetail() {
           <Link to="/tariff" className="inline-flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest hover:gap-4 transition-all mb-8">
             <ArrowLeft size={16} /> All Packages
           </Link>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 detail-animate">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 detail-animate opacity-0">
             <div>
               <span className="badge-premium badge-premium-blue mb-4">{pkg.type} Connectivity</span>
               <h1 className="text-5xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Poppins' }}>{pkg.name}</h1>
@@ -68,7 +82,7 @@ export default function PackageDetail() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 detail-animate">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 detail-animate opacity-0">
           
           {/* LEFT COLUMN: Main Specs & Pricing */}
           <div className="lg:col-span-8 space-y-12">
