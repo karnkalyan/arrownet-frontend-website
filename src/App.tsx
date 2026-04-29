@@ -46,6 +46,7 @@ import FAQManager from './pages/admin/FAQManager';
 import BranchManager from './pages/admin/BranchManager';
 import TestimonialManager from './pages/admin/TestimonialManager';
 import LeadManager from './pages/admin/LeadManager';
+import TariffManager from './pages/admin/TariffManager';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -124,6 +125,7 @@ function AnimatedRoutes() {
           <Route path="customers" element={<PageWrapper><CustomerManager /></PageWrapper>} />
           <Route path="tickets" element={<PageWrapper><TicketDesk /></PageWrapper>} />
           <Route path="leads" element={<PageWrapper><LeadManager /></PageWrapper>} />
+          <Route path="tariffs" element={<PageWrapper><TariffManager /></PageWrapper>} />
           <Route path="settings" element={<PageWrapper><SettingsPage /></PageWrapper>} />
         </Route>
 

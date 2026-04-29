@@ -70,6 +70,9 @@ interface AppState {
   // Data stores
   blogPosts: BlogPost[];
   faqs: FAQ[];
+  // Data stores
+  blogPosts: BlogPost[];
+  faqs: FAQ[];
   branches: Branch[];
   testimonials: Testimonial[];
 
@@ -96,6 +99,15 @@ interface AppState {
   addPackage: (data: any) => Promise<boolean>;
   updatePackage: (id: number, data: any) => Promise<boolean>;
   deletePackage: (id: number) => Promise<boolean>;
+
+  // Setup Charges & Notes (Shared)
+  fetchTariffExtras: () => Promise<void>;
+  addSetupCharge: (data: any) => Promise<boolean>;
+  updateSetupCharge: (id: number, data: any) => Promise<boolean>;
+  deleteSetupCharge: (id: number) => Promise<boolean>;
+  addTariffNote: (data: any) => Promise<boolean>;
+  updateTariffNote: (id: number, data: any) => Promise<boolean>;
+  deleteTariffNote: (id: number) => Promise<boolean>;
 
   addBlogPost: (data: any) => Promise<boolean>;
   updateBlogPost: (id: number, data: any) => Promise<boolean>;
@@ -181,6 +193,9 @@ export const useStore = create<AppState>()(
       faqs: [],
       branches: [],
       testimonials: [],
+      setupCharges: [],
+      tariffNotes: [],
+      taxRate: 13,
 
       themeColors: {
         primary: '#4c08cd',
@@ -196,7 +211,7 @@ export const useStore = create<AppState>()(
 
       fetchInitialData: async () => {
         try {
-          const [blogsRes, faqsRes, branchesRes, testimonialsRes, packagesRes, careersRes, annRes, settingsRes] = await Promise.all([
+          const [blogsRes, faqsRes, branchesRes, testimonialsRes, packagesRes, careersRes, annRes, settingsRes, chargesRes, notesRes] = await Promise.all([
             api.get('/cms/blogs'),
             api.get('/cms/faqs'),
             api.get('/cms/branches'),
@@ -204,7 +219,9 @@ export const useStore = create<AppState>()(
             api.get('/packages'),
             api.get('/cms/careers'),
             api.get('/cms/announcements'),
-            api.get('/settings').catch(() => ({ data: null }))
+            api.get('/settings').catch(() => ({ data: null })),
+            api.get('/tariffs/setup-charges').catch(() => ({ data: [] })),
+            api.get('/tariffs/notes').catch(() => ({ data: [] })),
           ]);
           
           if (settingsRes.data) {
@@ -217,6 +234,9 @@ export const useStore = create<AppState>()(
             branches: branchesRes.data,
             testimonials: testimonialsRes.data,
             packages: packagesRes.data,
+            setupCharges: chargesRes.data,
+            tariffNotes: notesRes.data,
+            taxRate: settingsRes.data?.taxRate || 13,
             cms: {
               ...state.cms,
               careers: careersRes.data,
@@ -504,11 +524,11 @@ export const useStore = create<AppState>()(
         set(state => ({ sectionImages: { ...state.sectionImages, [key]: url } }));
       },
 
-      // CRUD Packages
+      // Unified Package CRUD
       addPackage: async (data) => {
         try {
           const res = await api.post('/packages', data);
-          set(state => ({ packages: [...state.packages, res.data] }));
+          set(state => ({ packages: [res.data, ...state.packages] }));
           return true;
         } catch (error) { console.error(error); return false; }
       },
@@ -523,6 +543,58 @@ export const useStore = create<AppState>()(
         try {
           await api.delete(`/packages/${id}`);
           set(state => ({ packages: state.packages.filter(p => p.id !== id) }));
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+
+      fetchTariffExtras: async () => {
+        try {
+          const [chargesRes, notesRes] = await Promise.all([
+            api.get('/tariffs/setup-charges'),
+            api.get('/tariffs/notes'),
+          ]);
+          set({ setupCharges: chargesRes.data, tariffNotes: notesRes.data });
+        } catch (error) { console.error(error); }
+      },
+      addSetupCharge: async (data) => {
+        try {
+          const res = await api.post('/tariffs/setup-charges', data);
+          set(state => ({ setupCharges: [...state.setupCharges, res.data] }));
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+      updateSetupCharge: async (id, data) => {
+        try {
+          const res = await api.put(`/tariffs/setup-charges/${id}`, data);
+          set(state => ({ setupCharges: state.setupCharges.map(c => c.id === id ? res.data : c) }));
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+      deleteSetupCharge: async (id) => {
+        try {
+          await api.delete(`/tariffs/setup-charges/${id}`);
+          set(state => ({ setupCharges: state.setupCharges.filter(c => c.id !== id) }));
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+      addTariffNote: async (data) => {
+        try {
+          const res = await api.post('/tariffs/notes', data);
+          set(state => ({ tariffNotes: [...state.tariffNotes, res.data] }));
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+      updateTariffNote: async (id, data) => {
+        try {
+          const res = await api.put(`/tariffs/notes/${id}`, data);
+          set(state => ({ tariffNotes: state.tariffNotes.map(n => n.id === id ? res.data : n) }));
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+      deleteTariffNote: async (id) => {
+        try {
+          await api.delete(`/tariffs/notes/${id}`);
+          set(state => ({ tariffNotes: state.tariffNotes.filter(n => n.id !== id) }));
           return true;
         } catch (error) { console.error(error); return false; }
       },

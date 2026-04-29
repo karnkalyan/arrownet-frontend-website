@@ -189,6 +189,10 @@ export default function SettingsPage() {
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Physical HQ Address</label>
                 <input name="contactAddress" className="input-premium" value={formData.contactAddress || ''} onChange={handleChange} />
               </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">VAT / Tax Rate (%)</label>
+                <input name="taxRate" type="number" step="0.1" className="input-premium font-mono" value={formData.taxRate || 13} onChange={handleChange} placeholder="13" />
+              </div>
             </div>
           </div>
         </div>

@@ -3,14 +3,14 @@ import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import {
   LayoutDashboard, FileText, Package, Users, Headphones, Settings,
   ChevronLeft, ChevronRight, Bell, LogOut, Menu, X, Shield, Briefcase,
-  BookOpen, HelpCircle, MapPin, Star, MessageSquare
+  BookOpen, HelpCircle, MapPin, Star, MessageSquare, DollarSign
 } from 'lucide-react';
 import { useStore } from '../../store/useStore';
 
 const navItems = [
   { icon: <LayoutDashboard size={18} />, label: 'Dashboard', href: '/admin' },
   { icon: <FileText size={18} />, label: 'CMS Editor', href: '/admin/cms' },
-  { icon: <Package size={18} />, label: 'Packages', href: '/admin/packages' },
+  { icon: <Package size={18} />, label: 'Packages & Tariffs', href: '/admin/tariffs' },
   { icon: <Briefcase size={18} />, label: 'Careers', href: '/admin/careers' },
   { icon: <BookOpen size={18} />, label: 'Blog Posts', href: '/admin/blog' },
   { icon: <HelpCircle size={18} />, label: 'FAQs', href: '/admin/faqs' },
