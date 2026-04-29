@@ -136,7 +136,7 @@ export default function PackageDetail() {
           </div>
 
           {/* RIGHT COLUMN: Sidebar (Setup Charges & Subscribe) */}
-          <div className="lg:col-span-4 flex flex-col gap-8 sticky top-32 self-start h-fit pb-12">
+          <div className="lg:col-span-4 flex flex-col gap-8">
             
             {/* Setup Charges Summary (Light Mode Update) */}
             <div className="card-premium bg-white text-slate-900 !p-10 border-slate-100 shadow-2xl z-20">

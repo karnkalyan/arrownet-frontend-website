@@ -157,14 +157,14 @@ export default function Tariff() {
                       <Wifi size={28} />
                     </div>
                  </div>
-                 <div className="space-y-6">
+                 <div className="space-y-5">
                     {setupCharges.filter(c => c.category === 'Internet').map((charge) => (
-                      <div key={charge.id} className="flex justify-between items-center group/item">
+                      <div key={charge.id} className="flex justify-between items-center group/item pb-4 border-b border-slate-50 last:border-0 last:pb-0">
                          <div>
-                            <div className="text-slate-900 font-black text-lg group-hover/item:text-primary transition-colors">{charge.itemName}</div>
-                            <div className="text-[10px] text-slate-400 font-bold uppercase mt-1">{charge.note}</div>
+                            <div className="text-slate-800 font-bold text-base group-hover/item:text-primary transition-colors">{charge.itemName}</div>
+                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">{charge.note}</div>
                          </div>
-                         <div className="text-2xl font-black text-primary">{charge.price}</div>
+                         <div className="text-lg font-black text-slate-900">{charge.price}</div>
                       </div>
                     ))}
                  </div>
@@ -184,14 +184,14 @@ export default function Tariff() {
                       <Monitor size={28} />
                     </div>
                  </div>
-                 <div className="space-y-6">
+                 <div className="space-y-5">
                     {setupCharges.filter(c => c.category === 'TV').map((charge) => (
-                      <div key={charge.id} className="flex justify-between items-center group/item">
+                      <div key={charge.id} className="flex justify-between items-center group/item pb-4 border-b border-slate-50 last:border-0 last:pb-0">
                          <div>
-                            <div className="text-slate-900 font-black text-lg group-hover/item:text-blue-500 transition-colors">{charge.itemName}</div>
-                            <div className="text-[10px] text-slate-400 font-bold uppercase mt-1">{charge.note}</div>
+                            <div className="text-slate-800 font-bold text-base group-hover/item:text-blue-500 transition-colors">{charge.itemName}</div>
+                            <div className="text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">{charge.note}</div>
                          </div>
-                         <div className="text-2xl font-black text-slate-900">{charge.price}</div>
+                         <div className="text-lg font-black text-slate-900">{charge.price}</div>
                       </div>
                     ))}
                  </div>
