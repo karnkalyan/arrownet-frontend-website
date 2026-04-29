@@ -202,20 +202,20 @@ export default function Tariff() {
 
         {/* Footer Notes (Detailed Update) */}
         {tariffNotes.length > 0 && (
-          <div className="mt-32 p-16 rounded-[3rem] bg-slate-900 text-slate-400 shadow-2xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -mr-32 -mt-32" />
-            <h4 className="text-white font-black uppercase tracking-[0.3em] text-xs mb-12 flex items-center gap-3">
+          <div className="mt-32 p-16 rounded-[3rem] bg-white border border-slate-100 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-32 -mt-32" />
+            <h4 className="text-slate-900 font-black uppercase tracking-[0.3em] text-xs mb-12 flex items-center gap-3">
               <ShieldCheck className="text-primary" size={16} /> Important Terms & Conditions
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-8 relative">
               {tariffNotes.map((note, idx) => (
                 <div key={idx} className="flex gap-6 text-sm leading-relaxed group">
                   <span className="text-primary font-black text-lg leading-none opacity-50 group-hover:opacity-100 transition-opacity">{String(idx + 1).padStart(2, '0')}</span>
-                  <p className="font-medium">{note.text}</p>
+                  <p className="font-medium text-slate-600">{note.text}</p>
                 </div>
               ))}
             </div>
-            <div className="mt-16 pt-12 border-t border-white/5 text-[10px] uppercase font-black tracking-widest text-slate-500 text-center">
+            <div className="mt-16 pt-12 border-t border-slate-100 text-[10px] uppercase font-black tracking-widest text-slate-400 text-center">
                Arrownet Pvt. Ltd. © {new Date().getFullYear()} - All Rights Reserved
             </div>
           </div>
