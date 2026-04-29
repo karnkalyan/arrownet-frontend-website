@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { 
   Wifi, ShieldCheck, Zap, Globe, CreditCard, 
   ArrowLeft, ArrowRight, CheckCircle2, Clock, Headphones, 
-  Signal, Lock, Star, Play
+  Signal, Lock, Star, Play, Server, Activity
 } from 'lucide-react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -15,12 +15,13 @@ export default function PackageDetail() {
   const { id } = useParams();
   const { packages, setupCharges, taxRate, fetchInitialData } = useStore();
   const [activeTier, setActiveTier] = useState<any>(null);
+
   const pkg = packages.find(p => p.id === Number(id));
 
   useEffect(() => {
     fetchInitialData();
     window.scrollTo(0, 0);
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (packages.length > 0) {
@@ -34,11 +35,10 @@ export default function PackageDetail() {
       }, 100);
       return () => clearTimeout(timer);
     }
-  }, [packages]);
+  }, [packages, id]);
 
   useEffect(() => {
     if (pkg && pkg.pricingTiers?.length > 0) {
-      // Default to best value or first tier
       const best = pkg.pricingTiers.find((t: any) => t.isBestValue) || pkg.pricingTiers[0];
       setActiveTier(best);
     }
@@ -47,7 +47,7 @@ export default function PackageDetail() {
   if (!pkg) return (
     <div className="h-screen flex items-center justify-center bg-slate-50">
       <div className="text-center">
-        <h2 className="text-2xl font-black text-slate-900 mb-4">Package not found</h2>
+        <h2 className="text-2xl font-black text-slate-900 mb-4 tracking-tight">Package not found</h2>
         <Link to="/tariff" className="btn-premium btn-premium-primary">Back to Plans</Link>
       </div>
     </div>
@@ -82,17 +82,17 @@ export default function PackageDetail() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 detail-animate opacity-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           
           {/* LEFT COLUMN: Main Specs & Pricing */}
-          <div className="lg:col-span-8 space-y-12">
+          <div className="lg:col-span-8 space-y-12 detail-animate opacity-0">
             
             {/* 1. Plan Comparison / Selection */}
             <div className="card-premium !p-10 bg-white border-slate-100 shadow-2xl shadow-slate-200/50">
                <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
                  <CreditCard size={24} className="text-primary" /> Plan Charges & Duration
                </h3>
-               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
                  {pkg.pricingTiers?.map((tier: any, i: number) => (
                    <button 
                      key={i}
@@ -120,7 +120,7 @@ export default function PackageDetail() {
                )}
             </div>
 
-            {/* 2. Descriptive Benefit Cards (WorldLink Style) */}
+            {/* 2. Descriptive Benefit Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                {pkg.benefits?.map((benefit: any, i: number) => (
                  <div key={i} className="card-premium bg-white border-slate-100 group hover:border-primary/20 transition-all p-10">
@@ -136,67 +136,74 @@ export default function PackageDetail() {
           </div>
 
           {/* RIGHT COLUMN: Sidebar (Setup Charges & Subscribe) */}
-          <div className="lg:col-span-4 space-y-8">
+          <div className="lg:col-span-4 flex flex-col gap-8">
             
-            {/* Setup Charges Summary */}
-            <div className="card-premium bg-slate-900 text-white !p-8 border-none sticky top-32 shadow-2xl">
-              <h3 className="text-xl font-black mb-6 border-b border-white/10 pb-4">One Time Setup Charges</h3>
-              <div className="space-y-4 mb-8">
+            {/* Setup Charges Summary (Enhanced Contrast & Sticky Handling) */}
+            <div className="card-premium bg-slate-900 text-white !p-10 border-none sticky top-32 shadow-2xl z-20">
+              <h3 className="text-2xl font-black mb-8 border-b border-white/10 pb-4">One Time Setup Charges</h3>
+              <div className="space-y-6 mb-10">
                 {setupCharges.filter(c => c.category === 'Internet').map((charge) => (
-                   <div key={charge.id} className="flex justify-between items-center text-sm">
-                      <span className="text-slate-400 font-bold">{charge.itemName}</span>
-                      <span className="font-black text-primary">{charge.price}</span>
+                   <div key={charge.id} className="flex justify-between items-start group">
+                      <div>
+                        <div className="text-slate-100 font-black text-base">{charge.itemName}</div>
+                        <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">{charge.note}</div>
+                      </div>
+                      <span className="font-black text-primary text-lg">{charge.price}</span>
                    </div>
                 ))}
               </div>
-              <div className="p-6 bg-white/5 rounded-2xl mb-8">
-                <p className="text-xs text-slate-400 leading-relaxed italic">
-                   * These packages are intended for residential use only. Fair Usage Policy is applicable. 
+              <div className="p-6 bg-white/5 rounded-[1.5rem] mb-10 border border-white/5">
+                <p className="text-[11px] text-slate-300 leading-relaxed italic">
+                   * These packages are intended for residential/business use only. Fair Usage Policy is applicable. 
                    ONU Rental and Deposit are standard for new installations.
                 </p>
               </div>
-              <button className="btn-premium btn-premium-primary !w-full !py-6 text-lg tracking-tight">Subscribe Now</button>
-              <div className="mt-4 text-center">
-                 <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">Fastest Deployment in Kathmandu Valley</span>
-              </div>
+              <button className="btn-premium btn-premium-primary !w-full !py-6 text-xl tracking-tight !rounded-[1.5rem] shadow-xl shadow-primary/20">Subscribe Now</button>
             </div>
 
-            {/* Support Widget */}
-            <div className="card-premium !p-8 bg-white border-slate-100">
-               <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-500"><Clock size={24} /></div>
-                  <div><div className="text-sm font-black text-slate-900">24/7 Priority Support</div><div className="text-xs text-slate-400">Response within 30 mins</div></div>
+            {/* Support Widget (Fixed Spacing to avoid overlap) */}
+            <div className="card-premium !p-10 bg-white border-slate-100 relative z-10 shadow-xl shadow-slate-200/50">
+               <div className="flex items-center gap-5 mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-500"><Clock size={28} /></div>
+                  <div><div className="text-lg font-black text-slate-900">24/7 Priority Support</div><div className="text-sm text-slate-400 font-bold uppercase tracking-widest">Response within 30 mins</div></div>
                </div>
-               <p className="text-xs text-slate-500 leading-relaxed">Our dedicated technical team is available around the clock to ensure your {pkg.speed} connection remains rock-solid.</p>
+               <p className="text-sm text-slate-500 leading-relaxed font-medium">Our dedicated technical team is available around the clock to ensure your {pkg.speed} connection remains rock-solid.</p>
             </div>
 
           </div>
 
         </div>
 
-        {/* Similar Packages Section */}
-        <div className="mt-32">
+        {/* Similar Packages Section (Premium Update) */}
+        <div className="mt-32 detail-animate opacity-0">
            <div className="flex items-center gap-4 mb-12">
              <h2 className="text-3xl font-black text-slate-900" style={{ fontFamily: 'Poppins' }}>Explore More Packages</h2>
              <div className="h-px flex-1 bg-slate-200" />
            </div>
            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
              {packages.filter(p => p.id !== pkg.id).slice(0, 3).map(p => (
-               <Link to={`/package/${p.id}`} key={p.id} className="card-premium bg-white border-slate-100 hover:scale-[1.02] transition-all p-8 flex flex-col justify-between">
-                  <div>
-                    <div className="text-xs font-black text-primary uppercase tracking-widest mb-2">{p.speed}</div>
-                    <h4 className="text-lg font-black text-slate-900 mb-4">{p.name}</h4>
-                    <div className="flex flex-wrap gap-2 mb-8">
-                      {(p.features || '').split(',').filter(Boolean).map((f: string, i: number) => (
-                        <span key={i} className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-100 text-[8px] font-bold text-slate-500">
-                          {f.trim()}
-                        </span>
-                      ))}
+               <Link to={`/package/${p.id}`} key={p.id} className="card-premium bg-white border-slate-100 hover:scale-[1.02] transition-all p-10 flex flex-col justify-between group overflow-hidden relative">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-all group-hover:bg-primary/10" />
+                  <div className="relative">
+                    <div className="flex items-center justify-between mb-6">
+                       <div className="text-xs font-black text-primary uppercase tracking-widest px-3 py-1 rounded-full bg-primary/5">{p.speed}</div>
+                       {p.type === 'SOHO' && <div className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-1"><Server size={12} /> Pro Business</div>}
+                    </div>
+                    <h4 className="text-2xl font-black text-slate-900 mb-6 group-hover:text-primary transition-colors">{p.name}</h4>
+                    
+                    <div className="space-y-3 mb-10">
+                       {(p.features || '').split(',').slice(0, 4).map((f: string, i: number) => (
+                         <div key={i} className="flex items-center gap-3 text-xs font-bold text-slate-500">
+                            <CheckCircle2 size={14} className="text-green-500" /> {f.trim()}
+                         </div>
+                       ))}
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-6 pt-6 border-t border-slate-50">
-                     <span className="text-xs font-bold text-slate-400">View Details</span>
-                     <ArrowRight size={16} className="text-primary" />
+                  <div className="flex items-center justify-between mt-6 pt-8 border-t border-slate-100 relative">
+                     <span className="text-xs font-black text-slate-400 uppercase tracking-widest">View Full Specs</span>
+                     <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all">
+                        <ArrowRight size={18} />
+                     </div>
                   </div>
                </Link>
              ))}
