@@ -136,24 +136,24 @@ export default function PackageDetail() {
           </div>
 
           {/* RIGHT COLUMN: Sidebar (Setup Charges & Subscribe) */}
-          <div className="lg:col-span-4 flex flex-col gap-8">
+          <div className="lg:col-span-4 flex flex-col gap-8 sticky top-32 self-start h-fit pb-12">
             
-            {/* Setup Charges Summary (Enhanced Contrast & Sticky Handling) */}
-            <div className="card-premium bg-slate-900 text-white !p-10 border-none sticky top-32 shadow-2xl z-20">
-              <h3 className="text-2xl font-black mb-8 border-b border-white/10 pb-4">One Time Setup Charges</h3>
+            {/* Setup Charges Summary (Light Mode Update) */}
+            <div className="card-premium bg-white text-slate-900 !p-10 border-slate-100 shadow-2xl z-20">
+              <h3 className="text-2xl font-black mb-8 border-b border-slate-100 pb-4">One Time Setup Charges</h3>
               <div className="space-y-6 mb-10">
                 {setupCharges.filter(c => c.category === 'Internet').map((charge) => (
                    <div key={charge.id} className="flex justify-between items-start group">
                       <div>
-                        <div className="text-slate-100 font-black text-base">{charge.itemName}</div>
+                        <div className="text-slate-900 font-black text-base">{charge.itemName}</div>
                         <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">{charge.note}</div>
                       </div>
                       <span className="font-black text-primary text-lg">{charge.price}</span>
                    </div>
                 ))}
               </div>
-              <div className="p-6 bg-white/5 rounded-[1.5rem] mb-10 border border-white/5">
-                <p className="text-[11px] text-slate-300 leading-relaxed italic">
+              <div className="p-6 bg-slate-50 rounded-[1.5rem] mb-10 border border-slate-100">
+                <p className="text-[11px] text-slate-500 leading-relaxed italic">
                    * These packages are intended for residential/business use only. Fair Usage Policy is applicable. 
                    ONU Rental and Deposit are standard for new installations.
                 </p>
@@ -161,7 +161,7 @@ export default function PackageDetail() {
               <button className="btn-premium btn-premium-primary !w-full !py-6 text-xl tracking-tight !rounded-[1.5rem] shadow-xl shadow-primary/20">Subscribe Now</button>
             </div>
 
-            {/* Support Widget (Fixed Spacing to avoid overlap) */}
+            {/* Support Widget */}
             <div className="card-premium !p-10 bg-white border-slate-100 relative z-10 shadow-xl shadow-slate-200/50">
                <div className="flex items-center gap-5 mb-6">
                   <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-500"><Clock size={28} /></div>
@@ -185,16 +185,16 @@ export default function PackageDetail() {
                <Link to={`/package/${p.id}`} key={p.id} className="card-premium bg-white border-slate-100 hover:scale-[1.02] transition-all p-10 flex flex-col justify-between group overflow-hidden relative">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-all group-hover:bg-primary/10" />
                   <div className="relative">
-                    <div className="flex items-center justify-between mb-6">
-                       <div className="text-xs font-black text-primary uppercase tracking-widest px-3 py-1 rounded-full bg-primary/5">{p.speed}</div>
-                       {p.type === 'SOHO' && <div className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-1"><Server size={12} /> Pro Business</div>}
+                    <div className="flex items-center justify-between mb-4">
+                       <div className="text-4xl font-black text-primary tracking-tight" style={{ fontFamily: 'Poppins' }}>{p.speed}</div>
+                       {p.type === 'SOHO' && <div className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md"><Server size={12} /> Pro Business</div>}
                     </div>
-                    <h4 className="text-2xl font-black text-slate-900 mb-6 group-hover:text-primary transition-colors">{p.name}</h4>
+                    <h4 className="text-lg font-black text-slate-900 mb-6 group-hover:text-primary transition-colors">{p.name}</h4>
                     
                     <div className="space-y-3 mb-10">
                        {(p.features || '').split(',').slice(0, 4).map((f: string, i: number) => (
                          <div key={i} className="flex items-center gap-3 text-xs font-bold text-slate-500">
-                            <CheckCircle2 size={14} className="text-green-500" /> {f.trim()}
+                            <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" /> <span className="truncate">{f.trim()}</span>
                          </div>
                        ))}
                     </div>

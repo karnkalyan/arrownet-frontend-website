@@ -136,7 +136,7 @@ export default function Tariff() {
         {/* Setup Charges Section */}
         <div className="mt-32">
           <div className="flex items-center gap-4 mb-12">
-            <div className="w-12 h-12 rounded-2xl bg-slate-900 flex items-center justify-center text-white">
+            <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                <Activity size={24} />
             </div>
             <h2 className="text-4xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Poppins' }}>One-Time Setup Charges</h2>
@@ -145,40 +145,56 @@ export default function Tariff() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
             {/* Internet Charges */}
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden">
-               <div className="bg-slate-900 p-8 flex items-center justify-between">
-                  <h3 className="text-xl font-black text-white">Internet Installation</h3>
-                  <Wifi className="text-primary" size={24} />
-               </div>
-               <div className="p-8 space-y-6">
-                  {setupCharges.filter(c => c.category === 'Internet').map((charge) => (
-                    <div key={charge.id} className="flex justify-between items-center group">
-                       <div>
-                          <div className="text-slate-800 font-black text-base">{charge.itemName}</div>
-                          <div className="text-[10px] text-slate-400 font-bold uppercase mt-0.5">{charge.note}</div>
-                       </div>
-                       <div className="text-xl font-black text-primary">{charge.price}</div>
+            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl hover:shadow-2xl transition-all overflow-hidden relative group p-10">
+               <div className="absolute top-0 right-0 w-48 h-48 bg-primary/5 rounded-full blur-3xl -mr-24 -mt-24 transition-all group-hover:bg-primary/10" />
+               <div className="relative">
+                 <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-6">
+                    <div>
+                      <h3 className="text-2xl font-black text-slate-900">Internet Installation</h3>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Setup & Hardware</p>
                     </div>
-                  ))}
+                    <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                      <Wifi size={28} />
+                    </div>
+                 </div>
+                 <div className="space-y-6">
+                    {setupCharges.filter(c => c.category === 'Internet').map((charge) => (
+                      <div key={charge.id} className="flex justify-between items-center group/item">
+                         <div>
+                            <div className="text-slate-900 font-black text-lg group-hover/item:text-primary transition-colors">{charge.itemName}</div>
+                            <div className="text-[10px] text-slate-400 font-bold uppercase mt-1">{charge.note}</div>
+                         </div>
+                         <div className="text-2xl font-black text-primary">{charge.price}</div>
+                      </div>
+                    ))}
+                 </div>
                </div>
             </div>
 
             {/* TV Charges */}
-            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl overflow-hidden">
-               <div className="bg-primary p-8 flex items-center justify-between">
-                  <h3 className="text-xl font-black text-white">IPTV Setup Charges</h3>
-                  <Monitor className="text-white" size={24} />
-               </div>
-               <div className="p-8 space-y-6">
-                  {setupCharges.filter(c => c.category === 'TV').map((charge) => (
-                    <div key={charge.id} className="flex justify-between items-center">
-                       <div>
-                          <div className="text-slate-800 font-black text-base">{charge.itemName}</div>
-                          <div className="text-[10px] text-slate-400 font-bold uppercase mt-0.5">{charge.note}</div>
-                       </div>
-                       <div className="text-xl font-black text-slate-900">{charge.price}</div>
+            <div className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl hover:shadow-2xl transition-all overflow-hidden relative group p-10">
+               <div className="absolute top-0 right-0 w-48 h-48 bg-blue-500/5 rounded-full blur-3xl -mr-24 -mt-24 transition-all group-hover:bg-blue-500/10" />
+               <div className="relative">
+                 <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-6">
+                    <div>
+                      <h3 className="text-2xl font-black text-slate-900">IPTV Setup Charges</h3>
+                      <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Set-Top Box & Cable</p>
                     </div>
-                  ))}
+                    <div className="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                      <Monitor size={28} />
+                    </div>
+                 </div>
+                 <div className="space-y-6">
+                    {setupCharges.filter(c => c.category === 'TV').map((charge) => (
+                      <div key={charge.id} className="flex justify-between items-center group/item">
+                         <div>
+                            <div className="text-slate-900 font-black text-lg group-hover/item:text-blue-500 transition-colors">{charge.itemName}</div>
+                            <div className="text-[10px] text-slate-400 font-bold uppercase mt-1">{charge.note}</div>
+                         </div>
+                         <div className="text-2xl font-black text-slate-900">{charge.price}</div>
+                      </div>
+                    ))}
+                 </div>
                </div>
             </div>
           </div>
