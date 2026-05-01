@@ -10,6 +10,9 @@ export default function SettingsPage() {
   const logoInputRef = useRef<HTMLInputElement>(null);
   const adminLogoInputRef = useRef<HTMLInputElement>(null);
   const faviconInputRef = useRef<HTMLInputElement>(null);
+  const heroImageInputRef = useRef<HTMLInputElement>(null);
+  const homeCtaImageInputRef = useRef<HTMLInputElement>(null);
+  const aboutPromoImageInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchSettings();
@@ -46,6 +49,15 @@ export default function SettingsPage() {
     if (faviconInputRef.current?.files?.[0]) {
       data.append('favicon', faviconInputRef.current.files[0]);
     }
+    if (heroImageInputRef.current?.files?.[0]) {
+      data.append('heroImage', heroImageInputRef.current.files[0]);
+    }
+    if (homeCtaImageInputRef.current?.files?.[0]) {
+      data.append('homeCtaImage', homeCtaImageInputRef.current.files[0]);
+    }
+    if (aboutPromoImageInputRef.current?.files?.[0]) {
+      data.append('aboutPromoImage', aboutPromoImageInputRef.current.files[0]);
+    }
 
     const success = await updateSettings(data);
     setSaving(false);
@@ -55,6 +67,9 @@ export default function SettingsPage() {
       if (logoInputRef.current) logoInputRef.current.value = '';
       if (adminLogoInputRef.current) adminLogoInputRef.current.value = '';
       if (faviconInputRef.current) faviconInputRef.current.value = '';
+      if (heroImageInputRef.current) heroImageInputRef.current.value = '';
+      if (homeCtaImageInputRef.current) homeCtaImageInputRef.current.value = '';
+      if (aboutPromoImageInputRef.current) aboutPromoImageInputRef.current.value = '';
     } else {
       toast.error('Failed to update settings');
     }
@@ -225,6 +240,15 @@ export default function SettingsPage() {
                   <input name="heroSecondaryCTA" className="input-premium" value={formData.heroSecondaryCTA || ''} onChange={handleChange} />
                 </div>
               </div>
+              <div>
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Hero Background Image</label>
+                <input type="file" ref={heroImageInputRef} className="text-xs file:btn-premium file:btn-premium-secondary file:!py-1 file:!px-3 file:mr-3" accept="image/*" />
+                {formData.heroImageUrl && (
+                  <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center h-32 overflow-hidden">
+                    <img src={formData.heroImageUrl.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || '/api'}`.replace('/api', '') + formData.heroImageUrl : formData.heroImageUrl} alt="Hero Background" className="h-full object-cover rounded-lg" />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -243,6 +267,26 @@ export default function SettingsPage() {
               <div>
                 <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Market Position / About</label>
                 <input name="aboutMarketPosition" className="input-premium" value={formData.aboutMarketPosition || ''} onChange={handleChange} />
+              </div>
+              <div className="grid grid-cols-2 gap-6 pt-4 border-t border-slate-100">
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Home CTA Image</label>
+                  <input type="file" ref={homeCtaImageInputRef} className="text-xs w-full file:btn-premium file:btn-premium-secondary file:!py-1 file:!px-3 file:mr-3" accept="image/*" />
+                  {formData.homeCtaImageUrl && (
+                    <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center h-24 overflow-hidden">
+                      <img src={formData.homeCtaImageUrl.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || '/api'}`.replace('/api', '') + formData.homeCtaImageUrl : formData.homeCtaImageUrl} alt="Home CTA" className="h-full object-cover rounded-lg" />
+                    </div>
+                  )}
+                </div>
+                <div>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">About Promo Image</label>
+                  <input type="file" ref={aboutPromoImageInputRef} className="text-xs w-full file:btn-premium file:btn-premium-secondary file:!py-1 file:!px-3 file:mr-3" accept="image/*" />
+                  {formData.aboutPromoImageUrl && (
+                    <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center h-24 overflow-hidden">
+                      <img src={formData.aboutPromoImageUrl.startsWith('/uploads') ? `${import.meta.env.VITE_API_URL || '/api'}`.replace('/api', '') + formData.aboutPromoImageUrl : formData.aboutPromoImageUrl} alt="About Promo" className="h-full object-cover rounded-lg" />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>

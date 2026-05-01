@@ -70,9 +70,6 @@ interface AppState {
   // Data stores
   blogPosts: BlogPost[];
   faqs: FAQ[];
-  // Data stores
-  blogPosts: BlogPost[];
-  faqs: FAQ[];
   branches: Branch[];
   testimonials: Testimonial[];
 
@@ -82,6 +79,14 @@ interface AppState {
   adminLogoUrl: string;
   faviconUrl: string;
   authLoading: boolean;
+
+  setupCharges: any[];
+  tariffNotes: any[];
+  taxRate: number;
+  themeColors: any;
+  whatsappNumber: string;
+  heroImageUrl: string;
+  sectionImages: Record<string, string>;
 
   // Actions
   fetchInitialData: () => Promise<void>;
@@ -138,6 +143,12 @@ interface AppState {
   updateLead: (id: number, data: any) => Promise<boolean>;
   deleteLead: (id: number) => Promise<boolean>;
 
+  // Job Applications
+  jobApplications: any[];
+  fetchJobApplications: () => Promise<void>;
+  submitJobApplication: (data: FormData) => Promise<boolean>;
+  updateJobApplicationStatus: (id: number, status: string) => Promise<boolean>;
+
   addTicket: (data: any) => Promise<boolean>;
   updateTicketStatus: (id: string, status: string) => Promise<boolean>;
   addTicketMessage: (id: string, msg: any) => Promise<boolean>;
@@ -147,6 +158,12 @@ interface AppState {
 
   updateCustomerStatus: (id: string, status: string) => Promise<boolean>;
   deleteCustomer: (id: string) => Promise<boolean>;
+  updateTheme: (colors: any) => void;
+  updateLogo: (url: string) => void;
+  updateWhatsappNumber: (number: string) => void;
+  updateHeroImage: (url: string) => void;
+  updateSectionImage: (key: string, url: string) => void;
+  applySettings: (settings: any) => void;
 }
 
 export const useStore = create<AppState>()(
@@ -193,6 +210,7 @@ export const useStore = create<AppState>()(
       faqs: [],
       branches: [],
       testimonials: [],
+      jobApplications: [],
       setupCharges: [],
       tariffNotes: [],
       taxRate: 13,
@@ -293,6 +311,12 @@ export const useStore = create<AppState>()(
           logoUrl: formatUrl(settings.logoUrl),
           adminLogoUrl: formatUrl(settings.adminLogoUrl),
           faviconUrl: formatFav(settings.faviconUrl),
+          heroImageUrl: settings.heroImageUrl?.startsWith('/uploads') ? `${API_HOST}${settings.heroImageUrl}` : (settings.heroImageUrl || state.heroImageUrl),
+          sectionImages: {
+            ...state.sectionImages,
+            home_cta: settings.homeCtaImageUrl?.startsWith('/uploads') ? `${API_HOST}${settings.homeCtaImageUrl}` : (settings.homeCtaImageUrl || state.sectionImages.home_cta),
+            about_promo: settings.aboutPromoImageUrl?.startsWith('/uploads') ? `${API_HOST}${settings.aboutPromoImageUrl}` : (settings.aboutPromoImageUrl || state.sectionImages.about_promo),
+          },
           cms: {
             ...state.cms,
             heroSection: {
@@ -759,6 +783,31 @@ export const useStore = create<AppState>()(
         try {
           await api.delete(`/leads/${id}`);
           set(state => ({ leads: state.leads.filter(l => l.id !== id) }));
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+
+      // Job Application Actions
+      fetchJobApplications: async () => {
+        try {
+          const res = await api.get('/job-applications');
+          set({ jobApplications: res.data });
+        } catch (error) { console.error(error); }
+      },
+      submitJobApplication: async (data: FormData) => {
+        try {
+          await api.post('/job-applications/apply', data, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+          });
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+      updateJobApplicationStatus: async (id: number, status: string) => {
+        try {
+          const res = await api.put(`/job-applications/${id}/status`, { status });
+          set(state => ({
+            jobApplications: state.jobApplications.map(app => app.id === id ? res.data : app)
+          }));
           return true;
         } catch (error) { console.error(error); return false; }
       },

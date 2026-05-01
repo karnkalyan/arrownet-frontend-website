@@ -4,14 +4,10 @@ import { gsap } from 'gsap';
 import { MapPin, Clock, Briefcase, ChevronRight, Send, X, Sparkles, Building2, Users } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import toast, { Toaster } from 'react-hot-toast';
+import { useStore } from '../store/useStore';
 import NetworkBackground from '../components/shared/NetworkBackground';
 
-const jobs = [
-  { id: 1, title: 'Network Infrastructure Engineer', department: 'Engineering', type: 'Full-time', location: 'HQ / Field', description: 'Design, implement, and troubleshoot ultra-high-density network infrastructure including carrier-grade fiber optic, wireless, and enterprise core routing solutions.', requirements: ['JNCIP / CCNP certification preferred', 'Advanced knowledge of BGP, OSPF, and MPLS', 'Experience with GPON/EPON hardware', 'Proficiency in Unix-based network environments'] },
-  { id: 2, title: 'Technical Account Manager', department: 'Executive Support', type: 'Full-time', location: 'Kathmandu', description: 'Act as the primary technical contact for our enterprise and corporate clients, ensuring 99.99% service availability and architectural optimization.', requirements: ['Strong technical project management skills', 'Deep understanding of enterprise network topologies', 'Bilingual (Nepali & English) excellence', 'Previous ISP or MSP experience required'] },
-  { id: 3, title: 'Frontend Systems Architect', department: 'IT / Operations', type: 'Full-time', location: 'Kathmandu', description: 'Lead the development of mission-critical dashboards, customer procurement portals, and internal diagnostic tools using React and modern animation frameworks.', requirements: ['Expertise in React, TypeScript, and Framer Motion', 'Deep understanding of REST/GraphQL architectures', 'Experience with large-scale CRM integration', 'Portfolio demonstrating premium UI/UX execution'] },
-  { id: 4, title: 'Strategic Sales Lead', department: 'Sales', type: 'Full-time', location: 'Kathmandu Valley', description: 'Drive high-ticket enterprise acquisitions and develop strategic partnerships with multi-national corporations and government agencies.', requirements: ['5+ years in B2B enterprise sales', 'Proven record of hitting high-growth targets', 'Extensive knowledge of the Nepali tech landscape', 'Expert level CRM and pipeline management'] },
-];
+
 
 function AnimatedCard({ children, index }: { children: React.ReactNode; index: number }) {
   const ref = useRef(null);
@@ -31,8 +27,12 @@ function AnimatedCard({ children, index }: { children: React.ReactNode; index: n
 export default function Career() {
   const [selectedJob, setSelectedJob] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, handleSubmit, reset, formState: { errors } } = useForm();
   const containerRef = useRef<HTMLDivElement>(null);
+  const { submitJobApplication, cms } = useStore();
+  
+  const jobs = cms?.careers || [];
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -44,10 +44,35 @@ export default function Career() {
     return () => ctx.revert();
   }, []);
 
-  const onSubmit = () => {
-    toast.success('Your application has been logged into our recruitment system.');
-    setShowForm(false);
-    reset();
+  const onSubmit = async (data: any) => {
+    const job = jobs.find(j => j.id === selectedJob);
+    if (!job) return;
+
+    if (!data.cv || data.cv.length === 0) {
+      toast.error('Please upload your CV/Resume.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.append('jobId', job.id.toString());
+    formData.append('jobTitle', job.title);
+    formData.append('name', data.name);
+    formData.append('email', data.email);
+    formData.append('phone', data.phone || '');
+    formData.append('coverLetter', data.coverLetter || '');
+    formData.append('cv', data.cv[0]);
+
+    const success = await submitJobApplication(formData);
+    setIsSubmitting(false);
+
+    if (success) {
+      toast.success('Your application has been logged into our recruitment system.');
+      setShowForm(false);
+      reset();
+    } else {
+      toast.error('Failed to submit application. Please try again.');
+    }
   };
 
   return (
@@ -149,7 +174,7 @@ export default function Career() {
                           <div className="mb-10">
                             <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-6">Execution Requirements</h4>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                              {job.requirements.map((r, i) => (
+                              {(job.requirements ? job.requirements.split('\n') : []).map((r: string, i: number) => (
                                 <div key={i} className="flex items-center gap-3 text-sm font-medium text-slate-600">
                                   <div className="w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" /> 
                                   {r}
@@ -229,13 +254,14 @@ export default function Career() {
 
                 <div>
                   <label className="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 ml-1">Upload CV / Resume</label>
-                  <input type="file" accept=".pdf,.doc,.docx" className="w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer file:transition-colors cursor-pointer border border-slate-200 rounded-xl p-2" />
+                  <input type="file" accept=".pdf,.doc,.docx" {...register('cv', { required: true })} className="w-full text-sm text-slate-500 file:mr-4 file:py-3 file:px-6 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 file:cursor-pointer file:transition-colors cursor-pointer border border-slate-200 rounded-xl p-2" />
                   <p className="text-[11px] text-slate-400 mt-1.5 ml-1">Accepted formats: PDF, DOC, DOCX (max 5MB)</p>
+                  {errors.cv && <p className="text-xs text-red-500 mt-1.5 ml-1">Please upload your CV</p>}
                 </div>
 
                 <div className="pt-4 space-y-3">
-                   <button type="submit" className="w-full btn-premium btn-premium-primary !py-5 justify-center shadow-primary/30 font-black text-base">
-                     Deploy Application
+                   <button type="submit" disabled={isSubmitting} className="w-full btn-premium btn-premium-primary !py-5 justify-center shadow-primary/30 font-black text-base disabled:opacity-70 disabled:cursor-not-allowed">
+                     {isSubmitting ? 'Submitting...' : 'Deploy Application'}
                    </button>
                    <a href="https://www.linkedin.com/company/arrownet/jobs/" target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 py-4 rounded-xl border border-slate-200 text-sm font-bold text-slate-600 hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 transition-all">
                      <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
