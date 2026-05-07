@@ -1,9 +1,9 @@
 import { useParams, Link } from 'react-router-dom';
 import { useStore } from '../store/useStore';
 import { useEffect, useState } from 'react';
-import { 
-  Wifi, ShieldCheck, Zap, Globe, CreditCard, 
-  ArrowLeft, ArrowRight, CheckCircle2, Clock, Headphones, 
+import {
+  Wifi, ShieldCheck, Zap, Globe, CreditCard,
+  ArrowLeft, ArrowRight, CheckCircle2, Clock, Headphones,
   Signal, Lock, Star, Play, Server, Activity
 } from 'lucide-react';
 import gsap from 'gsap';
@@ -27,7 +27,7 @@ export default function PackageDetail() {
     if (packages.length > 0) {
       const timer = setTimeout(() => {
         if (document.querySelectorAll('.detail-animate').length > 0) {
-          gsap.fromTo(".detail-animate", 
+          gsap.fromTo(".detail-animate",
             { y: 30, opacity: 0 },
             { y: 0, opacity: 1, duration: 0.8, stagger: 0.1, ease: "power4.out" }
           );
@@ -56,7 +56,7 @@ export default function PackageDetail() {
   return (
     <div className="bg-slate-50 min-h-screen pt-32 pb-32">
       <div className="max-w-7xl mx-auto px-6">
-        
+
         {/* Navigation & Header */}
         <div className="mb-12">
           <Link to="/tariff" className="inline-flex items-center gap-2 text-primary font-black text-xs uppercase tracking-widest hover:gap-4 transition-all mb-8">
@@ -66,7 +66,7 @@ export default function PackageDetail() {
             <div>
               <span className="badge-premium badge-premium-blue mb-4">{pkg.type} Connectivity</span>
               <h1 className="text-5xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Poppins' }}>{pkg.name}</h1>
-              
+
               <div className="flex flex-wrap gap-2 mt-6">
                 {(pkg.features || '').split(',').filter(Boolean).map((f: string, i: number) => (
                   <span key={i} className="px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-100 text-[10px] font-bold text-slate-600 flex items-center gap-1.5">
@@ -83,79 +83,79 @@ export default function PackageDetail() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-          
+
           {/* LEFT COLUMN: Main Specs & Pricing */}
           <div className="lg:col-span-8 space-y-12 detail-animate opacity-0">
-            
+
             {/* 1. Plan Comparison / Selection */}
             <div className="card-premium !p-10 bg-white border-slate-100 shadow-2xl shadow-slate-200/50">
-               <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
-                 <CreditCard size={24} className="text-primary" /> Plan Charges & Duration
-               </h3>
-               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-                 {pkg.pricingTiers?.map((tier: any, i: number) => (
-                   <button 
-                     key={i}
-                     onClick={() => setActiveTier(tier)}
-                     className={`p-6 rounded-[2rem] border-2 transition-all text-left relative overflow-hidden ${activeTier?.id === tier.id ? 'border-primary bg-primary/5 shadow-lg scale-[1.02]' : 'border-slate-100 bg-white hover:border-slate-200'}`}
-                   >
-                     {tier.isBestValue && <span className="absolute top-0 right-0 bg-primary text-white text-[8px] font-black uppercase px-4 py-1.5 rounded-bl-2xl">Best Value</span>}
-                     <div className="text-lg font-black text-slate-900 mb-1">{tier.duration} {tier.durationUnit}</div>
-                     <div className="text-2xl font-black text-primary mb-1">Rs. {tier.taxIncPrice?.toLocaleString() || '0'}</div>
-                     <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Incl. VAT</div>
-                   </button>
-                 ))}
-               </div>
+              <h3 className="text-xl font-black text-slate-900 mb-8 flex items-center gap-3">
+                <CreditCard size={24} className="text-primary" /> Plan Charges & Duration
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+                {pkg.pricingTiers?.map((tier: any, i: number) => (
+                  <button
+                    key={i}
+                    onClick={() => setActiveTier(tier)}
+                    className={`p-6 rounded-[2rem] border-2 transition-all text-left relative overflow-hidden ${activeTier?.id === tier.id ? 'border-primary bg-primary/5 shadow-lg scale-[1.02]' : 'border-slate-100 bg-white hover:border-slate-200'}`}
+                  >
+                    {tier.isBestValue && <span className="absolute top-0 right-0 bg-primary text-white text-[8px] font-black uppercase px-4 py-1.5 rounded-bl-2xl">Best Value</span>}
+                    <div className="text-lg font-black text-slate-900 mb-1">{tier.duration} {tier.durationUnit}</div>
+                    <div className="text-2xl font-black text-primary mb-1">Rs. {tier.taxIncPrice?.toLocaleString() || '0'}</div>
+                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Incl. VAT</div>
+                  </button>
+                ))}
+              </div>
 
-               {/* Active Plan Detail Table */}
-               {activeTier && (
-                 <div className="bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                       <div><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Internet Speed</label><div className="text-xl font-black text-slate-900">{pkg.speed}</div></div>
-                       <div><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Total Price</label><div className="text-xl font-black text-primary">Rs. {activeTier.taxIncPrice?.toLocaleString() || '0'}</div></div>
-                       <div><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Duration</label><div className="text-xl font-black text-slate-900">{activeTier.duration} {activeTier.durationUnit}</div></div>
-                       <div><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Router</label><div className="text-xl font-black text-slate-900">{pkg.routerInfo || 'Standard G6'}</div></div>
-                    </div>
-                 </div>
-               )}
+              {/* Active Plan Detail Table */}
+              {activeTier && (
+                <div className="bg-slate-50 rounded-[2.5rem] p-8 border border-slate-100">
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Internet Speed</label><div className="text-xl font-black text-slate-900">{pkg.speed}</div></div>
+                    <div><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Total Price</label><div className="text-xl font-black text-primary">Rs. {activeTier.taxIncPrice?.toLocaleString() || '0'}</div></div>
+                    <div><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Duration</label><div className="text-xl font-black text-slate-900">{activeTier.duration} {activeTier.durationUnit}</div></div>
+                    <div><label className="text-[10px] font-black uppercase text-slate-400 block mb-2">Router</label><div className="text-xl font-black text-slate-900">{pkg.routerInfo || 'Standard G6'}</div></div>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* 2. Descriptive Benefit Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-               {pkg.benefits?.map((benefit: any, i: number) => (
-                 <div key={i} className="card-premium bg-white border-slate-100 group hover:border-primary/20 transition-all p-10">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mb-6">
-                       {i === 0 ? <Zap size={28} /> : i === 1 ? <ShieldCheck size={28} /> : i === 2 ? <Globe size={28} /> : <Headphones size={28} />}
-                    </div>
-                    <h4 className="text-xl font-black text-slate-900 mb-4">{benefit.title}</h4>
-                    <p className="text-slate-500 leading-relaxed text-sm">{benefit.description}</p>
-                 </div>
-               ))}
+              {pkg.benefits?.map((benefit: any, i: number) => (
+                <div key={i} className="card-premium bg-white border-slate-100 group hover:border-primary/20 transition-all p-10">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/5 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all mb-6">
+                    {i === 0 ? <Zap size={28} /> : i === 1 ? <ShieldCheck size={28} /> : i === 2 ? <Globe size={28} /> : <Headphones size={28} />}
+                  </div>
+                  <h4 className="text-xl font-black text-slate-900 mb-4">{benefit.title}</h4>
+                  <p className="text-slate-500 leading-relaxed text-sm">{benefit.description}</p>
+                </div>
+              ))}
             </div>
 
           </div>
 
           {/* RIGHT COLUMN: Sidebar (Setup Charges & Subscribe) */}
           <div className="lg:col-span-4 flex flex-col gap-8">
-            
+
             {/* Setup Charges Summary (Light Mode Update) */}
             <div className="card-premium bg-white text-slate-900 !p-10 border-slate-100 shadow-2xl z-20">
               <h3 className="text-2xl font-black mb-8 border-b border-slate-100 pb-4">One Time Setup Charges</h3>
               <div className="space-y-6 mb-10">
                 {setupCharges.filter(c => c.category === 'Internet').map((charge) => (
-                   <div key={charge.id} className="flex justify-between items-start group">
-                      <div>
-                        <div className="text-slate-900 font-black text-base">{charge.itemName}</div>
-                        <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">{charge.note}</div>
-                      </div>
-                      <span className="font-black text-primary text-lg">{charge.price}</span>
-                   </div>
+                  <div key={charge.id} className="flex justify-between items-start group">
+                    <div>
+                      <div className="text-slate-900 font-black text-base">{charge.itemName}</div>
+                      <div className="text-[10px] text-slate-400 uppercase tracking-widest font-bold mt-1">{charge.note}</div>
+                    </div>
+                    <span className="font-black text-primary text-lg">{charge.price}</span>
+                  </div>
                 ))}
               </div>
               <div className="p-6 bg-slate-50 rounded-[1.5rem] border border-slate-100">
                 <p className="text-[11px] text-slate-500 leading-relaxed italic">
-                   * These packages are intended for residential/business use only. Fair Usage Policy is applicable. 
-                   ONU Rental and Deposit are standard for new installations.
+                  * These packages are intended for residential/business use only. Fair Usage Policy is applicable.
+                  ONU Rental and Deposit are standard for new installations.
                 </p>
               </div>
             </div>
@@ -167,44 +167,44 @@ export default function PackageDetail() {
                 <h3 className="text-xl font-black mb-8 flex items-center gap-2">
                   <CreditCard size={20} className="text-primary" /> Estimated Total
                 </h3>
-                
+
                 <div className="space-y-4 mb-8 relative">
-                   <div className="flex justify-between items-center text-sm">
-                      <span className="text-slate-400 font-medium">Plan Charge ({activeTier.duration} {activeTier.durationUnit})</span>
-                      <span className="text-white font-bold">Rs. {activeTier.taxIncPrice?.toLocaleString() || '0'}</span>
-                   </div>
-                   <div className="flex justify-between items-center text-sm pb-6 border-b border-white/10">
-                      <span className="text-slate-400 font-medium">Setup & Hardware</span>
-                      <span className="text-white font-bold">
-                        Rs. {setupCharges.filter(c => c.category === 'Internet').reduce((acc, c) => acc + parseInt(c.price.replace(/[^0-9]/g, '') || '0', 10), 0).toLocaleString()}
-                      </span>
-                   </div>
-                   <div className="flex justify-between items-end pt-2">
-                      <div>
-                        <div className="text-[10px] text-primary font-black uppercase tracking-widest mb-1">Grand Total</div>
-                        <div className="text-4xl font-black text-white tracking-tight" style={{ fontFamily: 'Poppins' }}>
-                          Rs. {(
-                            (activeTier.taxIncPrice || 0) + 
-                            setupCharges.filter(c => c.category === 'Internet').reduce((acc, c) => acc + parseInt(c.price.replace(/[^0-9]/g, '') || '0', 10), 0)
-                          ).toLocaleString()}
-                        </div>
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="text-slate-400 font-medium">Plan Charge ({activeTier.duration} {activeTier.durationUnit})</span>
+                    <span className="text-white font-bold">Rs. {activeTier.taxIncPrice?.toLocaleString() || '0'}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-sm pb-6 border-b border-white/10">
+                    <span className="text-slate-400 font-medium">Setup & Hardware</span>
+                    <span className="text-white font-bold">
+                      Rs. {setupCharges.filter(c => c.category === 'Internet').reduce((acc, c) => acc + parseInt(c.price.replace(/[^0-9]/g, '') || '0', 10), 0).toLocaleString()}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-end pt-2">
+                    <div>
+                      <div className="text-[10px] text-primary font-black uppercase tracking-widest mb-1">Grand Total</div>
+                      <div className="text-4xl font-black text-white tracking-tight" style={{ fontFamily: 'Poppins' }}>
+                        Rs. {(
+                          (activeTier.taxIncPrice || 0) +
+                          setupCharges.filter(c => c.category === 'Internet').reduce((acc, c) => acc + parseInt(c.price.replace(/[^0-9]/g, '') || '0', 10), 0)
+                        ).toLocaleString()}
                       </div>
-                   </div>
+                    </div>
+                  </div>
                 </div>
 
                 <button className="btn-premium btn-premium-primary !w-full !py-5 text-lg tracking-tight !rounded-[1.5rem] shadow-xl shadow-primary/20 relative z-10">
-                  Proceed to Subscribe
+                  <Link to={`/contact`} className="text-white">Proceed to Subscribe</Link>
                 </button>
               </div>
             )}
 
             {/* Support Widget */}
             <div className="card-premium !p-10 bg-white border-slate-100 relative z-10 shadow-xl shadow-slate-200/50">
-               <div className="flex items-center gap-5 mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-500"><Clock size={28} /></div>
-                  <div><div className="text-lg font-black text-slate-900">24/7 Priority Support</div><div className="text-sm text-slate-400 font-bold uppercase tracking-widest">Response within 30 mins</div></div>
-               </div>
-               <p className="text-sm text-slate-500 leading-relaxed font-medium">Our dedicated technical team is available around the clock to ensure your {pkg.speed} connection remains rock-solid.</p>
+              <div className="flex items-center gap-5 mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center text-green-500"><Clock size={28} /></div>
+                <div><div className="text-lg font-black text-slate-900">24/7 Priority Support</div><div className="text-sm text-slate-400 font-bold uppercase tracking-widest">Response within 30 mins</div></div>
+              </div>
+              <p className="text-sm text-slate-500 leading-relaxed font-medium">Our dedicated technical team is available around the clock to ensure your {pkg.speed} connection remains rock-solid.</p>
             </div>
 
           </div>
@@ -213,38 +213,38 @@ export default function PackageDetail() {
 
         {/* Similar Packages Section (Premium Update) */}
         <div className="mt-32 detail-animate opacity-0">
-           <div className="flex items-center gap-4 mb-12">
-             <h2 className="text-3xl font-black text-slate-900" style={{ fontFamily: 'Poppins' }}>Explore More Packages</h2>
-             <div className="h-px flex-1 bg-slate-200" />
-           </div>
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-             {packages.filter(p => p.id !== pkg.id).slice(0, 3).map(p => (
-               <Link to={`/package/${p.id}`} key={p.id} className="card-premium bg-white border-slate-100 hover:scale-[1.02] transition-all p-10 flex flex-col justify-between group overflow-hidden relative">
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-all group-hover:bg-primary/10" />
-                  <div className="relative">
-                    <div className="flex items-center justify-between mb-4">
-                       <div className="text-4xl font-black text-primary tracking-tight" style={{ fontFamily: 'Poppins' }}>{p.speed}</div>
-                       {p.type === 'SOHO' && <div className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md"><Server size={12} /> Pro Business</div>}
-                    </div>
-                    <h4 className="text-lg font-black text-slate-900 mb-6 group-hover:text-primary transition-colors">{p.name}</h4>
-                    
-                    <div className="space-y-3 mb-10">
-                       {(p.features || '').split(',').slice(0, 4).map((f: string, i: number) => (
-                         <div key={i} className="flex items-center gap-3 text-xs font-bold text-slate-500">
-                            <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" /> <span className="truncate">{f.trim()}</span>
-                         </div>
-                       ))}
-                    </div>
+          <div className="flex items-center gap-4 mb-12">
+            <h2 className="text-3xl font-black text-slate-900" style={{ fontFamily: 'Poppins' }}>Explore More Packages</h2>
+            <div className="h-px flex-1 bg-slate-200" />
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {packages.filter(p => p.id !== pkg.id).slice(0, 3).map(p => (
+              <Link to={`/package/${p.id}`} key={p.id} className="card-premium bg-white border-slate-100 hover:scale-[1.02] transition-all p-10 flex flex-col justify-between group overflow-hidden relative">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 transition-all group-hover:bg-primary/10" />
+                <div className="relative">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="text-4xl font-black text-primary tracking-tight" style={{ fontFamily: 'Poppins' }}>{p.speed}</div>
+                    {p.type === 'SOHO' && <div className="text-[10px] font-black text-blue-500 uppercase flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-md"><Server size={12} /> Pro Business</div>}
                   </div>
-                  <div className="flex items-center justify-between mt-6 pt-8 border-t border-slate-100 relative">
-                     <span className="text-xs font-black text-slate-400 uppercase tracking-widest">View Full Specs</span>
-                     <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all">
-                        <ArrowRight size={18} />
-                     </div>
+                  <h4 className="text-lg font-black text-slate-900 mb-6 group-hover:text-primary transition-colors">{p.name}</h4>
+
+                  <div className="space-y-3 mb-10">
+                    {(p.features || '').split(',').slice(0, 4).map((f: string, i: number) => (
+                      <div key={i} className="flex items-center gap-3 text-xs font-bold text-slate-500">
+                        <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" /> <span className="truncate">{f.trim()}</span>
+                      </div>
+                    ))}
                   </div>
-               </Link>
-             ))}
-           </div>
+                </div>
+                <div className="flex items-center justify-between mt-6 pt-8 border-t border-slate-100 relative">
+                  <span className="text-xs font-black text-slate-400 uppercase tracking-widest">View Full Specs</span>
+                  <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-primary group-hover:text-white transition-all">
+                    <ArrowRight size={18} />
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
 
       </div>

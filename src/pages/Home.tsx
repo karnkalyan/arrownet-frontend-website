@@ -1032,7 +1032,7 @@ export default function Home() {
               { v: 20, l: 'Branches', s: '+' },
               { v: 16, l: 'Years Presence', s: '+' },
               { v: 99, l: 'SLA Uptime', s: '.9%' },
-              { v: 500, l: 'Support Staff', s: '+' },
+              { v: 150, l: 'Support Staff', s: '+' },
             ].map((item, i) => (
               <div key={i} className="py-10 px-6 bg-white hover:bg-slate-50/60 transition-colors">
                 <StatCard value={item.v} label={item.l} suffix={item.s} delay={i * 0.12} />
