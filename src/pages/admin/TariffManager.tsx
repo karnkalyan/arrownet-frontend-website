@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useStore } from '../../store/useStore';
-import { Plus, Edit2, Trash2, X, Save, Wifi, Tv, FileText, Layout, Info, PlusCircle, MinusCircle } from 'lucide-react';
+import { Plus, Edit2, Trash2, X, Save, Wifi, Tv, FileText, Layout, Info, PlusCircle, MinusCircle, ArrowUp } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 type Tab = 'packages' | 'charges' | 'notes';
@@ -20,21 +20,42 @@ export default function TariffManager() {
   // Unified Package Form
   const emptyPackage = {
     name: '', speed: '', type: 'FTTH', description: '', routerInfo: '', isPopular: false,
-    features: '',
+    features: '', priority: 0,
     pricingTiers: [{ duration: 1, durationUnit: 'Month', basePrice: 0, taxIncPrice: 0, isBestValue: false }],
     benefits: [{ title: '', description: '', icon: '' }]
   };
   const [packageForm, setPackageForm] = useState<any>(emptyPackage);
 
   // Charge & Note forms
-  const [chargeForm, setChargeForm] = useState<any>({ category: 'Internet', itemName: '', price: '', note: '', sortOrder: 0 });
-  const [noteForm, setNoteForm] = useState<any>({ text: '', sortOrder: 0 });
+  const emptyCharge = { category: 'Internet', itemName: '', price: '', note: '', sortOrder: 0 };
+  const [chargeForm, setChargeForm] = useState<any>(emptyCharge);
+  
+  const emptyNote = { text: '', sortOrder: 0 };
+  const [noteForm, setNoteForm] = useState<any>(emptyNote);
 
-  const resetForms = () => { setEditId(null); setShowAdd(false); setPackageForm(emptyPackage); };
+  const resetForms = () => { 
+    setEditId(null); 
+    setShowAdd(false); 
+    setPackageForm(emptyPackage); 
+    setChargeForm(emptyCharge);
+    setNoteForm(emptyNote);
+  };
 
   const handleSavePackage = async () => {
     if (!packageForm.name || !packageForm.speed) return toast.error('Name and speed are required');
     const ok = editId ? await updatePackage(editId, packageForm) : await addPackage(packageForm);
+    if (ok) { toast.success('Saved successfully'); resetForms(); }
+  };
+
+  const handleSaveCharge = async () => {
+    if (!chargeForm.itemName || !chargeForm.price) return toast.error('Item name and price are required');
+    const ok = editId ? await updateSetupCharge(editId, chargeForm) : await addSetupCharge(chargeForm);
+    if (ok) { toast.success('Saved successfully'); resetForms(); }
+  };
+
+  const handleSaveNote = async () => {
+    if (!noteForm.text) return toast.error('Note text is required');
+    const ok = editId ? await updateTariffNote(editId, noteForm) : await addTariffNote(noteForm);
     if (ok) { toast.success('Saved successfully'); resetForms(); }
   };
 
@@ -64,7 +85,9 @@ export default function TariffManager() {
           <h1 className="text-3xl font-black text-slate-900 tracking-tight" style={{ fontFamily: 'Poppins' }}>Package & Tariff Manager</h1>
         </div>
         {!showAdd && !editId && (
-          <button onClick={() => setShowAdd(true)} className="btn-premium btn-premium-primary !px-6"><Plus size={20} /> New Package</button>
+          <button onClick={() => setShowAdd(true)} className="btn-premium btn-premium-primary !px-6">
+            <Plus size={20} /> New {tab === 'packages' ? 'Package' : tab === 'charges' ? 'Charge' : 'Note'}
+          </button>
         )}
       </div>
 
@@ -91,7 +114,8 @@ export default function TariffManager() {
                   <select className="input-premium" value={packageForm.type} onChange={e => setPackageForm({ ...packageForm, type: e.target.value })}><option>FTTH</option><option>SOHO</option><option>Corporate</option></select>
                 </div>
                 <div><label className="label-premium">Router Info</label><input className="input-premium" value={packageForm.routerInfo} onChange={e => setPackageForm({ ...packageForm, routerInfo: e.target.value })} placeholder="Dual-Band G6 Router" /></div>
-                <div className="md:col-span-2"><label className="label-premium">Quick Features (Comma separated)</label><input className="input-premium" value={packageForm.features} onChange={e => setPackageForm({ ...packageForm, features: e.target.value })} placeholder="Lowest Latency, 24/7 Support..." /></div>
+                <div><label className="label-premium">Priority (Higher = First)</label><input type="number" className="input-premium" value={packageForm.priority} onChange={e => setPackageForm({ ...packageForm, priority: e.target.value })} placeholder="0" /></div>
+                <div><label className="label-premium">Quick Features (Comma separated)</label><input className="input-premium" value={packageForm.features} onChange={e => setPackageForm({ ...packageForm, features: e.target.value })} placeholder="Lowest Latency, 24/7 Support..." /></div>
                 <div className="md:col-span-3"><label className="label-premium">Hero Description</label><textarea className="input-premium min-h-[100px]" value={packageForm.description} onChange={e => setPackageForm({ ...packageForm, description: e.target.value })} placeholder="Short marketing description..." /></div>
               </div>
 
@@ -145,7 +169,10 @@ export default function TariffManager() {
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-2">
                     <h3 className="text-xl font-black text-slate-900">{p.name}</h3>
-                    <span className="badge-premium badge-premium-blue">{p.type}</span>
+                    <div className="flex gap-2">
+                      {p.priority > 0 && <span className="badge-premium badge-premium-amber flex items-center gap-1"><ArrowUp size={10}/> {p.priority}</span>}
+                      <span className="badge-premium badge-premium-blue">{p.type}</span>
+                    </div>
                   </div>
                   <div className="text-4xl font-black text-slate-900 mb-4" style={{ fontFamily: 'Poppins' }}>{p.speed}</div>
                   <div className="flex flex-wrap gap-2 mb-6">
@@ -164,23 +191,77 @@ export default function TariffManager() {
         </>
       )}
 
-      {/* Charges & Notes Tabs (Same as before but linked to unified backend) */}
       {tab === 'charges' && (
         <div className="space-y-8">
-           <button onClick={() => setShowAdd(true)} className="btn-premium btn-premium-secondary"><Plus size={16} /> New Charge</button>
-           {/* Render same setup charge management as before */}
+           {(showAdd || editId) && (
+             <div className="card-premium !p-8 border-primary/20 shadow-xl animate-slide-up space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-black text-slate-900">{editId ? 'Edit Charge' : 'New One-Time Charge'}</h3>
+                  <button onClick={resetForms} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                  <div><label className="label-premium">Item Name</label><input className="input-premium" value={chargeForm.itemName} onChange={e => setChargeForm({...chargeForm, itemName: e.target.value})} placeholder="Standard Installation" /></div>
+                  <div><label className="label-premium">Price</label><input className="input-premium" value={chargeForm.price} onChange={e => setChargeForm({...chargeForm, price: e.target.value})} placeholder="Rs. 500" /></div>
+                  <div><label className="label-premium">Category</label>
+                    <select className="input-premium" value={chargeForm.category} onChange={e => setChargeForm({...chargeForm, category: e.target.value})}>
+                      <option>Internet</option><option>TV</option><option>Combined</option><option>Hardware</option>
+                    </select>
+                  </div>
+                  <div><label className="label-premium">Sort Order</label><input type="number" className="input-premium" value={chargeForm.sortOrder} onChange={e => setChargeForm({...chargeForm, sortOrder: e.target.value})} /></div>
+                  <div className="md:col-span-4"><label className="label-premium">Optional Note</label><input className="input-premium" value={chargeForm.note} onChange={e => setChargeForm({...chargeForm, note: e.target.value})} placeholder="Refundable deposit..." /></div>
+                </div>
+                <button onClick={handleSaveCharge} className="btn-premium btn-premium-primary"><Save size={18} /> Save Charge</button>
+             </div>
+           )}
+
            <div className="card-premium !p-0 overflow-hidden">
              <table className="table-premium w-full text-left">
-               <thead className="bg-slate-900 text-white"><tr><th className="p-4">Item</th><th>Price</th><th>Category</th><th>Action</th></tr></thead>
+               <thead className="bg-slate-900 text-white"><tr><th className="p-4">Item</th><th>Price</th><th>Category</th><th>Order</th><th>Action</th></tr></thead>
                <tbody>
                  {setupCharges.map(c => (
-                   <tr key={c.id} className="border-b">
-                     <td className="p-4 font-bold">{c.itemName}</td><td>{c.price}</td><td>{c.category}</td>
-                     <td className="p-4"><button onClick={() => deleteSetupCharge(c.id)} className="text-red-400"><Trash2 size={16} /></button></td>
+                   <tr key={c.id} className="border-b hover:bg-slate-50">
+                     <td className="p-4 font-bold">{c.itemName}</td><td>{c.price}</td><td>{c.category}</td><td>{c.sortOrder}</td>
+                     <td className="p-4 flex gap-2">
+                       <button onClick={() => { setEditId(c.id); setChargeForm(c); setShowAdd(false); }} className="text-blue-400"><Edit2 size={16} /></button>
+                       <button onClick={() => { if(confirm('Delete?')) deleteSetupCharge(c.id); }} className="text-red-400"><Trash2 size={16} /></button>
+                     </td>
                    </tr>
                  ))}
                </tbody>
              </table>
+           </div>
+        </div>
+      )}
+
+      {tab === 'notes' && (
+        <div className="space-y-8">
+           {(showAdd || editId) && (
+             <div className="card-premium !p-8 border-primary/20 shadow-xl animate-slide-up space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-xl font-black text-slate-900">{editId ? 'Edit Note' : 'New Footer Note'}</h3>
+                  <button onClick={resetForms} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
+                </div>
+                <div className="grid grid-cols-1 gap-6">
+                  <div><label className="label-premium">Note Text</label><textarea className="input-premium min-h-[100px]" value={noteForm.text} onChange={e => setNoteForm({...noteForm, text: e.target.value})} placeholder="* All prices are exclusive of 13% VAT..." /></div>
+                  <div className="w-1/4"><label className="label-premium">Sort Order</label><input type="number" className="input-premium" value={noteForm.sortOrder} onChange={e => setNoteForm({...noteForm, sortOrder: e.target.value})} /></div>
+                </div>
+                <button onClick={handleSaveNote} className="btn-premium btn-premium-primary"><Save size={18} /> Save Note</button>
+             </div>
+           )}
+
+           <div className="space-y-4">
+             {tariffNotes.map(n => (
+               <div key={n.id} className="card-premium flex items-center justify-between p-6">
+                 <div className="flex-1">
+                   <div className="text-xs font-bold text-slate-400 mb-1">Order: {n.sortOrder}</div>
+                   <p className="text-slate-700">{n.text}</p>
+                 </div>
+                 <div className="flex gap-3">
+                    <button onClick={() => { setEditId(n.id); setNoteForm(n); setShowAdd(false); }} className="p-2 rounded-lg bg-blue-50 text-blue-400 hover:bg-blue-500 hover:text-white transition-all"><Edit2 size={16} /></button>
+                    <button onClick={() => { if(confirm('Delete?')) deleteTariffNote(n.id); }} className="p-2 rounded-lg bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition-all"><Trash2 size={16} /></button>
+                 </div>
+               </div>
+             ))}
            </div>
         </div>
       )}

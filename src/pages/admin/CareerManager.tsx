@@ -17,10 +17,10 @@ export default function CareerManager() {
 
   const handleSave = () => {
     if (!form.title || !form.department || !form.description) return toast.error('Fill required fields');
-    
+
     addCareer({ ...form, id: Date.now() });
     toast.success('Vacancy added!');
-    
+
     setShowAdd(false);
     setForm({ title: '', department: '', type: 'Full-time', location: 'Kathmandu', status: 'Open', description: '', requirements: '' });
   };
@@ -34,11 +34,11 @@ export default function CareerManager() {
     <div className="card-premium !p-8 border-red-100 shadow-xl mb-12 animate-slide-up">
       <div className="flex items-center justify-between mb-8">
         <h3 className="text-xl font-black text-slate-900" style={{ fontFamily: 'Poppins' }}>
-           Post New Vacancy
+          Post New Vacancy
         </h3>
         <button onClick={() => setShowAdd(false)} className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:bg-slate-50 transition-all"><X size={20} /></button>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div><label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Position Title *</label><input className="input-premium font-bold" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} placeholder="e.g. Senior Network Engineer" /></div>
         <div>
@@ -54,11 +54,11 @@ export default function CareerManager() {
         </div>
         <div><label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Job Type</label><input className="input-premium" value={form.type} onChange={e => setForm({ ...form, type: e.target.value })} placeholder="e.g. Full-time" /></div>
         <div><label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Location</label><input className="input-premium" value={form.location} onChange={e => setForm({ ...form, location: e.target.value })} placeholder="e.g. Kathmandu" /></div>
-        
+
         <div className="md:col-span-2"><label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Job Description *</label><textarea className="input-premium min-h-[120px]" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} placeholder="Brief summary of responsibilities..." /></div>
         <div className="md:col-span-2"><label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-3 block">Requirements (one per line)</label><textarea className="input-premium min-h-[120px]" value={form.requirements} onChange={e => setForm({ ...form, requirements: e.target.value })} placeholder="JNCIP / CCNP certification preferred..." /></div>
       </div>
-      
+
       <button onClick={handleSave} className="btn-premium btn-premium-primary !w-full md:!w-fit !px-10 mt-8">
         <Save size={18} /> Publish Vacancy
       </button>
@@ -75,13 +75,13 @@ export default function CareerManager() {
         </div>
         <div className="flex items-center gap-4">
           <div className="flex bg-slate-50 p-1 rounded-2xl border border-slate-100">
-            <button 
+            <button
               onClick={() => setActiveTab('vacancies')}
               className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'vacancies' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             >
               Vacancies
             </button>
-            <button 
+            <button
               onClick={() => setActiveTab('applications')}
               className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'applications' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
             >
@@ -101,46 +101,46 @@ export default function CareerManager() {
       {activeTab === 'vacancies' && showAdd && formUI}
 
       {activeTab === 'vacancies' ? (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {careers.length > 0 ? (
-          careers.map((career: any) => (
-            <div key={career.id} className="card-premium animate-fade-in group">
-              <div className="flex items-start justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
-                    <Briefcase size={24} />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-black text-slate-900" style={{ fontFamily: 'Poppins' }}>{career.title}</h3>
-                    <div className="flex items-center gap-3 mt-1">
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{career.department}</span>
-                      <span className="w-1 h-1 rounded-full bg-slate-200" />
-                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{career.type}</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {careers.length > 0 ? (
+            careers.map((career: any) => (
+              <div key={career.id} className="card-premium animate-fade-in group">
+                <div className="flex items-start justify-between">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                      <Briefcase size={24} />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-black text-slate-900" style={{ fontFamily: 'Poppins' }}>{career.title}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{career.department}</span>
+                        <span className="w-1 h-1 rounded-full bg-slate-200" />
+                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{career.type}</span>
+                      </div>
                     </div>
                   </div>
+                  <button onClick={() => handleDelete(career.id)} className="w-9 h-9 rounded-xl bg-red-50 text-red-300 hover:bg-red-500 hover:text-white transition-all border border-red-100 flex items-center justify-center">
+                    <Trash2 size={14} />
+                  </button>
                 </div>
-                <button onClick={() => handleDelete(career.id)} className="w-9 h-9 rounded-xl bg-red-50 text-red-300 hover:bg-red-500 hover:text-white transition-all border border-red-100 flex items-center justify-center">
-                  <Trash2 size={14} />
-                </button>
+                <p className="text-sm text-slate-500 mt-4 leading-relaxed line-clamp-2">{career.description}</p>
+                <div className="flex items-center gap-2 mt-6 pt-6 border-t border-slate-50">
+                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location:</span>
+                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{career.location}</span>
+                  <span className="ml-auto badge-premium badge-premium-green">Active</span>
+                </div>
               </div>
-              <p className="text-sm text-slate-500 mt-4 leading-relaxed line-clamp-2">{career.description}</p>
-              <div className="flex items-center gap-2 mt-6 pt-6 border-t border-slate-50">
-                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Location:</span>
-                <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">{career.location}</span>
-                <span className="ml-auto badge-premium badge-premium-green">Active</span>
+            ))
+          ) : (
+            <div className="md:col-span-2 py-20 text-center">
+              <div className="w-16 h-16 rounded-3xl bg-slate-50 flex items-center justify-center text-slate-300 mx-auto mb-4">
+                <Briefcase size={32} />
               </div>
+              <h3 className="text-lg font-bold text-slate-400">No active vacancies</h3>
+              <p className="text-sm text-slate-400 mt-1">Post your first job opening to find new talent.</p>
             </div>
-          ))
-        ) : (
-          <div className="md:col-span-2 py-20 text-center">
-            <div className="w-16 h-16 rounded-3xl bg-slate-50 flex items-center justify-center text-slate-300 mx-auto mb-4">
-              <Briefcase size={32} />
-            </div>
-            <h3 className="text-lg font-bold text-slate-400">No active vacancies</h3>
-            <p className="text-sm text-slate-400 mt-1">Post your first job opening to find new talent.</p>
-          </div>
-        )}
-      </div>
+          )}
+        </div>
       ) : (
         <div className="space-y-6">
           {jobApplications.map((app: any) => (
@@ -160,7 +160,7 @@ export default function CareerManager() {
                     <p className="text-sm font-bold text-primary mb-4 flex items-center gap-2">
                       <Briefcase size={14} /> Applied for: {app.jobTitle}
                     </p>
-                    
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
                       <div className="flex items-center gap-2 text-sm text-slate-500 font-medium">
                         <Mail size={16} className="text-slate-400" /> {app.email}
@@ -181,13 +181,13 @@ export default function CareerManager() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-col gap-3 min-w-[140px]">
-                  <a href={`http://localhost:5000${app.cvUrl}`} target="_blank" rel="noopener noreferrer" className="btn-premium !py-3 !px-4 text-sm font-bold bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center justify-center gap-2 border border-slate-200">
+                  <a href={`${import.meta.env.VITE_API_BASE_URL}${app.cvUrl}`} target="_blank" rel="noopener noreferrer" className="btn-premium !py-3 !px-4 text-sm font-bold bg-slate-50 text-slate-700 hover:bg-slate-100 flex items-center justify-center gap-2 border border-slate-200">
                     <Download size={16} /> View CV
                   </a>
                   {app.status === 'NEW' && (
-                    <button 
+                    <button
                       onClick={() => {
                         updateJobApplicationStatus(app.id, 'REVIEWED');
                         toast.success('Application marked as reviewed');

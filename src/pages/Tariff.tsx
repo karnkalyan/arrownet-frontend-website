@@ -15,9 +15,10 @@ export default function Tariff() {
   }, []);
 
   const groupedPackages = useMemo(() => {
+    const sorted = [...packages].sort((a, b) => (b.priority || 0) - (a.priority || 0));
     return {
-      ftth: packages.filter(p => p.type === 'FTTH'),
-      soho: packages.filter(p => p.type === 'SOHO')
+      ftth: sorted.filter(p => p.type === 'FTTH'),
+      soho: sorted.filter(p => p.type === 'SOHO')
     };
   }, [packages]);
 

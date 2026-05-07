@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { gsap } from 'gsap';
@@ -8,7 +8,8 @@ import {
   Globe, Cpu, Server, Network, Lock,
   Gauge, Cloud, Layers, Activity, TrendingUp,
   CheckCircle, Play, Terminal, Database, ArrowUpRight, Home as HomeIcon,
-  ChevronDown, Phone, Mail, Send, Award, Users, Headphones, Building2, Landmark, BookOpen, Tag, User
+  ChevronDown, Phone, Mail, Send, Award, Users, Headphones, Building2, Landmark, BookOpen, Tag, User,
+  Wifi
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
 import ParticleNetwork from '../components/shared/ParticleNetwork';
@@ -122,99 +123,113 @@ function LiveTerminal() {
   );
 }
 
-// ─── LIVE NETWORK SCENE ──────────────────────────────────────────
-function LiveNetworkScene() {
+// ─── HERO ANIMATION (SERVER, ONT, FTTH) ──────────────────────────
+function HeroAnimation() {
   return (
-    <div className="relative w-full h-[260px] flex items-center justify-around px-8 mb-4 overflow-hidden rounded-3xl bg-slate-50/50 border border-slate-100">
-      {/* Background Particles Container */}
-      <div className="absolute inset-0 z-0 opacity-40">
-        <ParticleNetwork count={15} />
+    <div className="relative w-full aspect-square flex items-center justify-center overflow-visible">
+      {/* Background Glows */}
+      <div className="absolute inset-0 z-0">
+        <motion.div
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.15, 0.25, 0.15],
+          }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-gradient-to-tr from-primary/30 via-transparent to-blue-500/20 blur-[120px] rounded-full"
+        />
       </div>
 
-      {/* Connection Lines (SVG) */}
-      <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" viewBox="0 0 500 260">
-        <defs>
-          <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#E30613" stopOpacity="0.2" />
-            <stop offset="50%" stopColor="#E30613" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#E30613" stopOpacity="0.2" />
-          </linearGradient>
-        </defs>
+      <div className="relative z-10 w-full h-full flex items-center justify-center">
+        {/* Connection Paths with Flowing Particles */}
+        <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400">
+          <defs>
+            <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="transparent" />
+              <stop offset="50%" stopColor="var(--primary)" />
+              <stop offset="100%" stopColor="transparent" />
+            </linearGradient>
+          </defs>
 
-        {/* Animated flow paths */}
-        <motion.path
-          d="M 120 130 Q 250 80 380 130"
-          fill="none"
-          stroke="url(#lineGrad)"
-          strokeWidth="2"
-          strokeDasharray="8 8"
-          animate={{ strokeDashoffset: [-100, 0] }}
-          transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-        />
-        <motion.path
-          d="M 120 130 Q 250 180 380 130"
-          fill="none"
-          stroke="url(#lineGrad)"
-          strokeWidth="2"
-          strokeDasharray="8 8"
-          animate={{ strokeDashoffset: [0, -100] }}
-          transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
-        />
-      </svg>
+          {/* Dynamic Data Flows */}
+          {[
+            "M 80 120 Q 200 120 200 200",
+            "M 320 120 Q 200 120 200 200",
+            "M 80 280 Q 200 280 200 200",
+            "M 320 280 Q 200 280 200 200"
+          ].map((path, i) => (
+            <React.Fragment key={i}>
+              <motion.path
+                d={path}
+                fill="none"
+                stroke="rgba(227,6,19,0.08)"
+                strokeWidth="2"
+                strokeDasharray="4 4"
+              />
+              <motion.circle
+                r="3"
+                fill="var(--primary)"
+                initial={{ offsetDistance: "0%" }}
+                animate={{ offsetDistance: "100%" }}
+                transition={{
+                  duration: 3 + i,
+                  repeat: Infinity,
+                  ease: "linear",
+                  delay: i * 0.5
+                }}
+                style={{
+                  offsetPath: `path('${path}')`,
+                  filter: 'drop-shadow(0 0 6px var(--primary))'
+                }}
+              />
+            </React.Fragment>
+          ))}
+        </svg>
 
-      {/* Server Node (Source) */}
-      <motion.div
-        animate={{ y: [0, -8, 0] }}
-        transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-        className="relative z-10 flex flex-col items-center gap-2"
-      >
-        <div className="w-16 h-16 rounded-2xl bg-slate-900 flex items-center justify-center shadow-xl border border-slate-800">
-          <Server size={28} className="text-primary" />
-          <div className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full bg-green-500 border-2 border-white animate-pulse" />
-        </div>
-        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Main PoP</span>
-      </motion.div>
-
-      {/* Center Data Flow */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32">
-        {[...Array(4)].map((_, i) => (
+        {/* Social Icons Orbit */}
+        {[
+          { icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>, color: '#1877F2', radius: 140, speed: 20, delay: 0 },
+          { icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>, color: '#E4405F', radius: 140, speed: 20, delay: 5 },
+          { icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>, color: '#0A66C2', radius: 180, speed: 25, delay: 2 },
+          { icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.045 4.126H5.078z" /></svg>, color: '#000000', radius: 180, speed: 25, delay: 10 }
+        ].map((s, i) => (
           <motion.div
             key={i}
-            className="absolute w-1 h-1 rounded-full bg-primary"
-            animate={{
-              x: [(i % 2 === 0 ? -60 : 60), (i % 2 === 0 ? 60 : -60)],
-              y: [Math.sin(i) * 20, Math.cos(i) * 20],
-              opacity: [0, 1, 0],
-              scale: [0, 1.2, 0]
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: 2.5,
-              delay: i * 0.6
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Home Node (Destination) */}
-      <motion.div
-        animate={{ y: [0, -6, 0] }}
-        transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut", delay: 0.5 }}
-        className="relative z-10 flex flex-col items-center gap-2"
-      >
-        <div className="w-16 h-16 rounded-2xl bg-white flex items-center justify-center shadow-xl border border-slate-100 group">
-          <HomeIcon size={28} className="text-primary" />
-          {[1, 2].map(i => (
+            animate={{ rotate: 360 }}
+            transition={{ duration: s.speed, repeat: Infinity, ease: "linear", delay: -s.delay }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+            style={{ width: s.radius * 2, height: s.radius * 2 }}
+          >
             <motion.div
-              key={i}
-              className="absolute inset-0 border border-orange-200 rounded-2xl"
-              animate={{ scale: [1, 1.4], opacity: [0.4, 0] }}
-              transition={{ repeat: Infinity, duration: 2, delay: i * 0.8 }}
-            />
-          ))}
+              animate={{
+                rotate: -360,
+                y: [0, -12, 0]
+              }}
+              transition={{
+                rotate: { duration: s.speed, repeat: Infinity, ease: "linear", delay: -s.delay },
+                y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.7 }
+              }}
+              className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl bg-white shadow-2xl flex items-center justify-center border border-slate-100 cursor-pointer hover:scale-110 transition-transform"
+              style={{ color: s.color }}
+            >
+              {s.icon}
+            </motion.div>
+          </motion.div>
+        ))}
+
+        {/* Central Arrownet Label */}
+        <div className="relative z-10 flex flex-col items-center">
+          <motion.div
+            animate={{ scale: [0.95, 1.05, 0.95] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="text-2xl md:text-2xl font-bold text-primary tracking-tighter"
+            style={{ fontFamily: 'Poppins, sans-serif' }}
+          >
+            Arrow
+            <span className="text-red-500">net</span>
+          </motion.div>
+          <div className="w-20 h-1.5 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full mt-3" />
         </div>
-        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Fiber Home</span>
-      </motion.div>
+      </div>
     </div>
   );
 }
@@ -470,58 +485,56 @@ function TestimonialsSection() {
         <div className="flex items-stretch justify-center gap-5 md:gap-8 max-w-6xl mx-auto px-4 relative min-h-[350px]">
           <AnimatePresence mode="popLayout">
             {getVisible().map(({ item: t, pos }) => {
-            const isCenter = pos === 'center';
-            return (
-              <motion.div
-                key={t.id}
-                layout="position"
-                initial={{ opacity: 0, scale: 0.8, x: pos === 'right' ? 50 : pos === 'left' ? -50 : 0 }}
-                animate={{
-                  opacity: isCenter ? 1 : 0.5,
-                  scale: isCenter ? 1 : 0.9,
-                  y: isCenter ? 0 : 15,
-                  x: 0,
-                  zIndex: isCenter ? 10 : 0,
-                }}
-                exit={{ opacity: 0, scale: 0.8, x: pos === 'left' ? -50 : 50, transition: { duration: 0.4, ease: 'easeOut' } }}
-                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                className={`rounded-3xl border relative overflow-hidden transition-colors duration-500 origin-center ${
-                  isCenter
+              const isCenter = pos === 'center';
+              return (
+                <motion.div
+                  key={t.id}
+                  layout="position"
+                  initial={{ opacity: 0, scale: 0.8, x: pos === 'right' ? 50 : pos === 'left' ? -50 : 0 }}
+                  animate={{
+                    opacity: isCenter ? 1 : 0.5,
+                    scale: isCenter ? 1 : 0.9,
+                    y: isCenter ? 0 : 15,
+                    x: 0,
+                    zIndex: isCenter ? 10 : 0,
+                  }}
+                  exit={{ opacity: 0, scale: 0.8, x: pos === 'left' ? -50 : 50, transition: { duration: 0.4, ease: 'easeOut' } }}
+                  transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  className={`rounded-3xl border relative overflow-hidden transition-colors duration-500 origin-center ${isCenter
                     ? 'bg-white border-primary/30 shadow-2xl shadow-primary/10 flex-[1.5] min-w-0 p-9 z-10'
                     : 'bg-white/80 border-slate-100 shadow-sm flex-1 min-w-0 p-7 hidden md:block'
-                }`}
-              >
-                {isCenter && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-secondary to-accent" />}
-                <div className="flex gap-0.5 mb-5">
-                  {[1, 2, 3, 4, 5].map(r => (
-                    <Star key={r} size={isCenter ? 16 : 13} className={r <= t.rating ? 'text-accent fill-accent' : 'text-slate-200'} />
-                  ))}
-                </div>
-                <p className={`text-slate-600 font-medium leading-relaxed italic ${isCenter ? 'text-base mb-8' : 'text-sm mb-5 line-clamp-3'}`}>
-                  &ldquo;{t.quote}&rdquo;
-                </p>
-                <div className={`flex items-center gap-4 border-t border-slate-100 ${isCenter ? 'pt-6' : 'pt-4'}`}>
-                  <div
-                    className={`rounded-xl flex items-center justify-center text-white font-black ${
-                      isCenter ? 'w-12 h-12 text-lg' : 'w-10 h-10 text-sm'
-                    } ${t.type === 'corporate' ? 'bg-primary' : 'bg-secondary'}`}
-                    style={{ fontFamily: 'Poppins' }}
-                  >
-                    {t.name.charAt(0)}
+                    }`}
+                >
+                  {isCenter && <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary via-secondary to-accent" />}
+                  <div className="flex gap-0.5 mb-5">
+                    {[1, 2, 3, 4, 5].map(r => (
+                      <Star key={r} size={isCenter ? 16 : 13} className={r <= t.rating ? 'text-accent fill-accent' : 'text-slate-200'} />
+                    ))}
                   </div>
-                  <div>
-                    <div className={`font-bold text-slate-900 ${isCenter ? 'text-sm' : 'text-xs'}`}>{t.name}</div>
-                    <div className={`text-slate-400 ${isCenter ? 'text-xs' : 'text-[10px]'}`}>{t.designation}, {t.company}</div>
-                  </div>
-                  {isCenter && (
-                    <div className="ml-auto">
-                      {t.type === 'corporate' ? <Building2 size={16} className="text-primary/30" /> : <Landmark size={16} className="text-secondary/30" />}
+                  <p className={`text-slate-600 font-medium leading-relaxed italic ${isCenter ? 'text-base mb-8' : 'text-sm mb-5 line-clamp-3'}`}>
+                    &ldquo;{t.quote}&rdquo;
+                  </p>
+                  <div className={`flex items-center gap-4 border-t border-slate-100 ${isCenter ? 'pt-6' : 'pt-4'}`}>
+                    <div
+                      className={`rounded-xl flex items-center justify-center text-white font-black ${isCenter ? 'w-12 h-12 text-lg' : 'w-10 h-10 text-sm'
+                        } ${t.type === 'corporate' ? 'bg-primary' : 'bg-secondary'}`}
+                      style={{ fontFamily: 'Poppins' }}
+                    >
+                      {t.name.charAt(0)}
                     </div>
-                  )}
-                </div>
-              </motion.div>
-            );
-          })}
+                    <div>
+                      <div className={`font-bold text-slate-900 ${isCenter ? 'text-sm' : 'text-xs'}`}>{t.name}</div>
+                      <div className={`text-slate-400 ${isCenter ? 'text-xs' : 'text-[10px]'}`}>{t.designation}, {t.company}</div>
+                    </div>
+                    {isCenter && (
+                      <div className="ml-auto">
+                        {t.type === 'corporate' ? <Building2 size={16} className="text-primary/30" /> : <Landmark size={16} className="text-secondary/30" />}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
         </div>
 
@@ -531,9 +544,8 @@ function TestimonialsSection() {
             <button
               key={i}
               onClick={() => setActiveIdx(i)}
-              className={`rounded-full transition-all duration-300 ${
-                i === activeIdx ? 'w-8 h-2.5 bg-primary' : 'w-2.5 h-2.5 bg-slate-200 hover:bg-slate-300'
-              }`}
+              className={`rounded-full transition-all duration-300 ${i === activeIdx ? 'w-8 h-2.5 bg-primary' : 'w-2.5 h-2.5 bg-slate-200 hover:bg-slate-300'
+                }`}
             />
           ))}
         </div>
@@ -586,16 +598,16 @@ function GetInTouchSection() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.phone) return;
-    
+
     setLoading(true);
     const ok = await submitLead(form);
     setLoading(false);
 
     if (ok) {
       setSubmitted(true);
-      setTimeout(() => { 
-        setSubmitted(false); 
-        setForm({ name: '', phone: '', email: '' }); 
+      setTimeout(() => {
+        setSubmitted(false);
+        setForm({ name: '', phone: '', email: '' });
       }, 4000);
     } else {
       toast.error('Transmission failed. Please try again or call us.');
@@ -646,8 +658,8 @@ function GetInTouchSection() {
                     <input value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} type="email" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-3.5 text-white placeholder-slate-500 focus:border-accent focus:outline-none transition-colors" placeholder="email@example.com" required />
                   </div>
                 </div>
-                <button 
-                  type="submit" 
+                <button
+                  type="submit"
                   disabled={loading}
                   className="w-full py-4 rounded-xl bg-gradient-to-r from-secondary to-accent text-slate-900 font-black text-sm uppercase tracking-widest hover:shadow-lg hover:shadow-secondary/30 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50"
                 >
@@ -713,7 +725,15 @@ function BlogPreviewSection() {
 
 // ═══════════════════════════════════════════════════════════════════
 export default function Home() {
-  const { cms, heroImageUrl, sectionImages } = useStore();
+  const { cms, heroImageUrl, sectionImages, packages } = useStore();
+  const { companyInfo } = cms;
+
+  const homePackages = useMemo(() => {
+    return [...packages]
+      .sort((a, b) => (b.priority || 0) - (a.priority || 0))
+      .slice(0, 3);
+  }, [packages]);
+
   const pageRef = useRef<HTMLDivElement>(null);
 
   // ── GSAP ScrollTrigger + entrance animations ──────────────────
@@ -982,129 +1002,9 @@ export default function Home() {
               </div>
             </div>
 
-            {/* ── RIGHT: Live Network Dashboard Panel OR Hero Image ── */}
-            <div className="lg:col-span-6 hero-panel">
-              <div className="relative">
-                {heroImageUrl ? (
-                  <div className="relative rounded-[28px] border border-slate-200/80 bg-white/70 backdrop-blur-2xl shadow-2xl shadow-primary/10 overflow-hidden aspect-square md:aspect-video lg:aspect-square flex items-center justify-center">
-                    <img src={heroImageUrl} alt="Arrownet Hero" className="w-full h-full object-cover" />
-                  </div>
-                ) : (
-                  <>
-                    {/* Soft orange halo behind panel */}
-                    <div
-                      className="absolute -inset-8 rounded-[48px] pointer-events-none"
-                      style={{ background: 'radial-gradient(ellipse at 50% 50%, color-mix(in srgb, var(--primary), transparent 90%) 0%, transparent 70%)' }}
-                    />
-
-                <div className="relative rounded-[28px] border border-slate-200/80 bg-white/70 backdrop-blur-2xl shadow-2xl shadow-primary/5 overflow-hidden">
-                  {/* Top bar */}
-                  <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50/70 backdrop-blur-sm">
-                    <div className="flex items-center gap-2">
-                      <motion.div
-                        animate={{ opacity: [1, 0.35, 1] }}
-                        transition={{ repeat: Infinity, duration: 1.9 }}
-                        className="w-2 h-2 rounded-full bg-primary"
-                      />
-                      <span className="text-[10px] font-black uppercase tracking-widest text-primary">Live Network Feed</span>
-                    </div>
-                    <Terminal size={14} className="text-slate-300" />
-                  </div>
-
-                  <div className="p-6 space-y-5">
-                    {/* Animated Scene */}
-                    <LiveNetworkScene />
-
-                    {/* Metrics Dashboard */}
-                    <div className="grid grid-cols-3 gap-3">
-                      {[
-                        { label: 'Download', value: '987', unit: 'Mbps', color: 'text-orange-600', bg: 'bg-red-50/50' },
-                        { label: 'Upload', value: '981', unit: 'Mbps', color: 'text-green-600', bg: 'bg-green-50/50' },
-                        { label: 'Latency', value: '0.8', unit: 'ms', color: 'text-blue-600', bg: 'bg-blue-50/50' },
-                      ].map((m, i) => (
-                        <div key={i} className={`p-4 rounded-2xl ${m.bg} border border-white flex flex-col items-center shadow-sm`}>
-                          <div className={`text-xl font-black ${m.color}`} style={{ fontFamily: 'Poppins' }}>{m.value}</div>
-                          <div className="text-[7px] font-black uppercase tracking-widest text-slate-400 mt-0.5">{m.label} <span className="opacity-60">{m.unit}</span></div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Secondary Metrics */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                      {[
-                        { label: 'BGP Peers', value: '6 Active' },
-                        { label: 'Packet Loss', value: '0.00%' },
-                        { label: 'Jitter', value: '0.3ms' },
-                        { label: 'MTU', value: '9000 bytes' },
-                      ].map((m, i) => (
-                        <div key={i} className="p-3 rounded-xl border border-slate-50 text-center bg-white/50">
-                          <div className="text-[10px] font-black text-slate-800">{m.value}</div>
-                          <div className="text-[7px] font-black uppercase tracking-widest text-slate-400 mt-0.5">{m.label}</div>
-                        </div>
-                      ))}
-                    </div>
-
-                    {/* Operational Footer */}
-                    <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] text-green-600">All Systems Operational</span>
-                      </div>
-                      <span className="text-[8px] font-bold text-slate-300 uppercase tracking-widest">NOC-ID: ARW-4829</span>
-                    </div>
-                    <div className="border-t border-slate-100 pt-5">
-                      <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-3">Connection Health</div>
-                      <div className="grid grid-cols-2 gap-2.5">
-                        {[
-                          { k: 'BGP Peers', v: '6 Active' },
-                          { k: 'Packet Loss', v: '0.00%' },
-                          { k: 'Jitter', v: '0.3ms' },
-                          { k: 'MTU', v: '9000 bytes' },
-                        ].map(item => (
-                          <div key={item.k} className="rounded-xl bg-slate-50 border border-slate-100 px-3 py-2.5">
-                            <div className="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">{item.k}</div>
-                            <div className="text-sm font-black text-slate-800" style={{ fontFamily: 'Poppins, sans-serif' }}>{item.v}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Status pill */}
-                    <div className="flex items-center justify-between rounded-xl bg-primary/5 border border-orange-500/10 px-4 py-3">
-                      <div className="flex items-center gap-2">
-                        <motion.div
-                          animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }}
-                          transition={{ repeat: Infinity, duration: 1.7 }}
-                          className="w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(227,6,19,0.5)]"
-                        />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-orange-700">All Systems Operational</span>
-                      </div>
-                      <CheckCircle size={14} className="text-primary" />
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-
-              {/* Floating chips */}
-                <motion.div
-                  animate={{ y: [0, -7, 0] }}
-                  transition={{ repeat: Infinity, duration: 3.2, ease: 'easeInOut' }}
-                  className="hero-metric absolute -top-5 -right-4 rounded-2xl border border-orange-200 bg-white shadow-lg shadow-orange-100/60 px-4 py-3"
-                >
-                  <div className="text-xl font-black text-slate-900" style={{ fontFamily: 'Poppins, sans-serif' }}>99.99%</div>
-                  <div className="text-[8px] font-black uppercase tracking-widest text-primary">Uptime SLA</div>
-                </motion.div>
-
-                <motion.div
-                  animate={{ y: [0, 7, 0] }}
-                  transition={{ repeat: Infinity, duration: 3.8, ease: 'easeInOut', delay: 1 }}
-                  className="hero-metric absolute -bottom-5 -left-4 rounded-2xl border border-blue-200 bg-white shadow-lg shadow-blue-100/60 px-4 py-3"
-                >
-                  <div className="text-xl font-black text-slate-900" style={{ fontFamily: 'Poppins, sans-serif' }}>&lt; 2hrs</div>
-                  <div className="text-[8px] font-black uppercase tracking-widest text-blue-500">Response Time</div>
-                </motion.div>
-              </div>
+            {/* ── RIGHT: Animated Brand + Social Icons ── */}
+            <div className="lg:col-span-6 hero-panel relative flex items-center justify-center min-h-[600px]">
+              <HeroAnimation />
             </div>
           </div>
         </div>
@@ -1176,11 +1076,9 @@ export default function Home() {
           ── NO ugly separators. Clean transition: bg-white,
              only a centred accent dot-line at top, mesh gradient.
       ═══════════════════════════════════════════════════════════ */}
-      <section className="server-section relative py-32 bg-white overflow-hidden">
-        {/* The only "separator": a centred thin accent bar that GSAP grows */}
+      {/* <section className="server-section relative py-32 bg-white overflow-hidden">
         <div className="st-line absolute top-0 left-1/2 -translate-x-1/2 w-20 h-[2px] bg-gradient-to-r from-transparent via-orange-300 to-transparent rounded-full" />
 
-        {/* Mesh gradient — purely light, no dark bg */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -1193,7 +1091,6 @@ export default function Home() {
 
         <div className="container mx-auto px-6 relative z-10">
 
-          {/* Section label + heading */}
           <div className="max-w-xl mb-20 server-left">
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-green-50 border border-green-200 mb-6">
               <motion.div
@@ -1213,7 +1110,6 @@ export default function Home() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
-            {/* ── LEFT: Stat cards + checklist + terminal ── */}
             <div className="server-left space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 {[
@@ -1232,7 +1128,6 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Feature list */}
               <div className="space-y-3">
                 {[
                   'N+1 redundant power with UPS and generator failover',
@@ -1252,10 +1147,8 @@ export default function Home() {
               <LiveTerminal />
             </div>
 
-            {/* ── RIGHT: Node Grid Dashboard ── */}
             <div className="server-right space-y-5">
               <div className="rounded-3xl border border-slate-200 bg-white shadow-xl shadow-slate-100 overflow-hidden">
-                {/* Panel header */}
                 <div className="flex items-center justify-between px-6 py-4 bg-slate-50 border-b border-slate-100">
                   <div className="flex items-center gap-2.5">
                     <Server size={14} className="text-slate-400" />
@@ -1271,12 +1164,10 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* Node grid */}
                 <div className="p-6">
                   <LiveNodeGrid />
                 </div>
 
-                {/* Legend */}
                 <div className="px-6 pb-5 flex items-center gap-5 border-t border-slate-50 pt-4">
                   <div className="flex items-center gap-2">
                     <div className="w-3 h-3 rounded-md bg-green-500" />
@@ -1293,7 +1184,6 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Bottom metrics */}
               <div className="grid grid-cols-3 gap-4">
                 {[
                   { label: 'Total Nodes', value: '24', sub: 'All online' },
@@ -1310,7 +1200,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* ═══ FTTH CONCEPT ════════════════════════════════════════ */}
       <section className="py-28 relative overflow-hidden bg-slate-50">
@@ -1473,61 +1363,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ═══ PACKAGES ════════════════════════════════════════════ */}
-      <section className="py-28 bg-slate-50 relative overflow-hidden">
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(227,6,19,0.07) 0%, transparent 60%)' }}
-        />
-        <div className="container mx-auto px-6 relative z-10">
-          <div className="text-center mb-16 st-reveal">
-            <h2 className="text-5xl font-black text-slate-900 mb-3 tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>Popular Packages.</h2>
-            <p className="text-lg text-slate-500 font-medium">Plans designed for the modern digital lifestyle.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto st-card-group">
-            {[
-              { name: 'Home Streamer', speed: '50 Mbps', price: '1,200', desc: 'Perfect for small families and HD streaming.' },
-              { name: 'Gamer Pro', speed: '120 Mbps', price: '1,800', desc: 'Low-latency gaming and 4K capability.', popular: true },
-              { name: 'Office Max', speed: '300 Mbps', price: '3,500', desc: 'Dedicated bandwidth for heavy business tasks.' },
-            ].map((pkg, i) => (
-              <div
-                key={i}
-                className={`st-card relative rounded-3xl overflow-hidden bg-white transition-all duration-300 ${pkg.popular ? 'border-2 border-primary shadow-2xl shadow-orange-200/40 scale-[1.03]' : 'border border-slate-100 shadow-md'}`}
-              >
-                {pkg.popular && (
-                  <div className="bg-primary py-2 text-center text-[9px] font-black uppercase tracking-[0.3em] text-white">
-                    Most Recommended
-                  </div>
-                )}
-                <div className="p-9">
-                  <h3 className="text-lg font-black text-slate-900 mb-3" style={{ fontFamily: 'Poppins, sans-serif' }}>{pkg.name}</h3>
-                  <div className="mb-5 flex items-baseline gap-1">
-                    <span className="text-5xl font-black text-primary" style={{ fontFamily: 'Poppins, sans-serif' }}>{pkg.speed.split(' ')[0]}</span>
-                    <span className="text-sm font-black text-primary uppercase tracking-widest">{pkg.speed.split(' ')[1]}</span>
-                  </div>
-                  <p className="text-sm text-slate-500 font-medium mb-7 min-h-[40px] leading-relaxed">{pkg.desc}</p>
-                  <div className="flex items-baseline gap-1 mb-7">
-                    <span className="text-slate-400 font-bold text-sm">Rs.</span>
-                    <span className="text-3xl font-black text-slate-900" style={{ fontFamily: 'Poppins, sans-serif' }}>{pkg.price}</span>
-                    <span className="text-slate-400 text-sm">/month</span>
-                  </div>
-                  <Link
-                    to="/tariff"
-                    className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-2xl font-black text-[13px] uppercase tracking-widest transition-all duration-300 ${pkg.popular ? 'bg-primary text-white hover:bg-primary' : 'bg-slate-100 text-slate-800 hover:bg-slate-200'}`}
-                  >
-                    Select Plan
-                  </Link>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-12 st-reveal">
-            <Link to="/tariff" className="inline-flex items-center gap-2 text-sm font-black uppercase tracking-widest text-slate-400 hover:text-primary transition-colors">
-              Compare all tariffs <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* ═══ NETWORK MESH INTERLUDE ══════════════════════════════ */}
       <section className="relative py-24 flex items-center justify-center overflow-hidden bg-slate-900">

@@ -164,67 +164,107 @@ interface AppState {
   updateHeroImage: (url: string) => void;
   updateSectionImage: (key: string, url: string) => void;
   applySettings: (settings: any) => void;
+
+  // Contact Submissions
+  contactSubmissions: any[];
+  fetchContactSubmissions: () => Promise<void>;
+  submitContactForm: (data: any) => Promise<boolean>;
+  updateContactStatus: (id: number, status: string) => Promise<boolean>;
+  deleteContactSubmission: (id: number) => Promise<boolean>;
 }
+
+const defaultCMS = {
+  companyInfo: {
+    phone: '+977 1 5971333',
+    email: 'info@arrownet.com.np',
+    address: 'Kathmandu, Nepal',
+    tollFree: '16600112345'
+  },
+  theme: {},
+  announcements: [],
+  heroSection: {
+    title: 'THE NEW ARROWNET ERA',
+    subtitle: 'Full spectrum control over your digital infrastructure.',
+    primaryCTA: 'Get Started',
+    secondaryCTA: 'View Plans'
+  },
+  aboutSection: {
+    mission: 'To provide seamless connectivity to every corner of Nepal.',
+    marketPosition: 'Leading ISP in Kathmandu Valley.'
+  },
+  services: [],
+  footerLinks: { quickLinks: [], socialMedia: {} },
+  careers: [],
+};
 
 export const useStore = create<AppState>()(
   persist(
     (set, get) => ({
+      // State
       authRole: null,
-      currentCustomerId: null,
       isAuthenticated: false,
       currentUser: null,
+      currentCustomerId: null,
       authLoading: true,
-      
-      settings: {},
-      logoUrl: '/logo.png',
-      adminLogoUrl: '/logo.png',
-      faviconUrl: '/favicon.ico',
-      cms: {
-        companyInfo: {
-          phone: '+977 1 5971333',
-          email: 'info@arrownet.com.np',
-          address: 'Kathmandu, Nepal',
-          tollFree: '16600112345'
-        },
-        theme: {},
-        announcements: [],
-        heroSection: {
-          title: 'THE NEW ARROWNET ERA',
-          subtitle: 'Full spectrum control over your digital infrastructure.',
-          primaryCTA: 'Get Started',
-          secondaryCTA: 'View Plans'
-        },
-        aboutSection: {
-          mission: 'To provide seamless connectivity to every corner of Nepal.',
-          marketPosition: 'Leading ISP in Kathmandu Valley.'
-        },
-        services: [],
-        footerLinks: { quickLinks: [], socialMedia: {} },
-        careers: [],
-      },
-      leads: [],
+      cms: defaultCMS,
       packages: [],
-      customers: [],
-      tickets: [],
+      setupCharges: [],
+      tariffNotes: [],
+      taxRate: 13,
+      logoUrl: "/logo.png",
+      adminLogoUrl: "/logo.png",
+      faviconUrl: "/favicon.ico",
+      whatsappNumber: "9801000000",
+      heroImageUrl: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2070&auto=format&fit=crop",
+      sectionImages: {},
+      contactSubmissions: [],
+      blogs: [],
       blogPosts: [],
       faqs: [],
       branches: [],
       testimonials: [],
+      announcements: [],
+      settings: {},
+      customers: [],
+      leads: [],
       jobApplications: [],
-      setupCharges: [],
-      tariffNotes: [],
-      taxRate: 13,
-
+      tickets: [],
       themeColors: {
         primary: '#4c08cd',
         secondary: '#ed060d',
         accent: '#eecf00',
       },
-      whatsappNumber: '9800000000',
-      heroImageUrl: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1200&q=80',
-      sectionImages: {
-        'home_cta': 'https://images.unsplash.com/photo-1614064641913-6b71a25d25ec?auto=format&fit=crop&w=1200&q=80',
-        'about_promo': 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1200&q=80',
+
+      // Contact Submission Actions
+      submitContactForm: async (data: any) => {
+        try {
+          await api.post('/contact/submit', data);
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+      fetchContactSubmissions: async () => {
+        try {
+          const res = await api.get('/contact/submissions');
+          set({ contactSubmissions: res.data });
+        } catch (error) { console.error(error); }
+      },
+      updateContactStatus: async (id: number, status: string) => {
+        try {
+          const res = await api.put(`/contact/submissions/${id}/status`, { status });
+          set(state => ({
+            contactSubmissions: state.contactSubmissions.map(s => s.id === id ? res.data : s)
+          }));
+          return true;
+        } catch (error) { console.error(error); return false; }
+      },
+      deleteContactSubmission: async (id: number) => {
+        try {
+          await api.delete(`/contact/submissions/${id}`);
+          set(state => ({
+            contactSubmissions: state.contactSubmissions.filter(s => s.id !== id)
+          }));
+          return true;
+        } catch (error) { console.error(error); return false; }
       },
 
       fetchInitialData: async () => {
@@ -913,6 +953,7 @@ export const useStore = create<AppState>()(
           return true;
         } catch (error) { console.error(error); return false; }
       },
+
 
     }),
     {

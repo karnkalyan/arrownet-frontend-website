@@ -11,9 +11,9 @@ import FloatingElements from '../components/shared/FloatingElements';
 import BranchLocator from '../components/shared/BranchLocator';
 
 export default function Contact() {
-  const { cms } = useStore();
+  const { cms, submitContactForm } = useStore();
   const { companyInfo } = cms;
-  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: 'Sales', message: '' });
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -60,10 +60,14 @@ export default function Contact() {
       return;
     }
     setSubmitting(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setSubmitted(true);
+    const ok = await submitContactForm(form);
     setSubmitting(false);
-    toast.success('Our engineers will contact you shortly.');
+    if (ok) {
+      setSubmitted(true);
+      toast.success('Our engineers will contact you shortly.');
+    } else {
+      toast.error('Failed to send message. Please try again.');
+    }
   };
 
   return (
