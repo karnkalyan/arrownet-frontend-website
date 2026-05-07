@@ -986,7 +986,7 @@ export default function Home() {
               {/* Trust strip */}
               <div className="flex flex-wrap items-center gap-6 pt-5 border-t border-slate-100">
                 {[
-                  { val: '15K+', label: 'Active Users' },
+                  { val: '20+', label: 'Branches' },
                   { val: '12', label: 'Cities' },
                   { val: '2008', label: 'Est.' },
                 ].map(s => (
@@ -1029,7 +1029,7 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-slate-100 border border-slate-100 rounded-3xl overflow-hidden shadow-sm st-reveal">
             {[
-              { v: 15000, l: 'Active Users', s: '+' },
+              { v: 20, l: 'Branches', s: '+' },
               { v: 16, l: 'Years Presence', s: '+' },
               { v: 99, l: 'SLA Uptime', s: '.9%' },
               { v: 500, l: 'Support Staff', s: '+' },
