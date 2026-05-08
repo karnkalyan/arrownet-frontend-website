@@ -37,7 +37,7 @@ export default function About() {
     { year: '2010', event: 'First major wireless expansion across Kathmandu Valley.' },
     { year: '2014', event: 'Pioneered hybrid entertainment bundles with Cable TV.' },
     { year: '2018', event: 'Nation-wide deployment of FTTH (Fiber to the Home) technology.' },
-    { year: '2021', event: 'Reached 15,000+ satisfied customers nationwide.' },
+    { year: '2021', event: 'Modernized core network infrastructure for hyper-scale growth.' },
     { year: '2024', event: 'Upgraded infrastructure to support next-gen 1Gbps fiber cores.' },
   ];
 
@@ -146,10 +146,10 @@ export default function About() {
               </div>
               <div className="grid grid-cols-2 gap-6">
                 {[
-                  { label: 'Network Points', val: '240+' },
-                  { label: 'District Presence', val: '12+' },
-                  { label: 'High Speed Port', val: '50K+' },
-                  { label: 'Support Staff', val: '200+' },
+                  { label: 'Branches', val: '20+' },
+                  { label: 'Years Presence', val: '16+' },
+                  { label: 'SLA Uptime', val: '99.9%' },
+                  { label: 'Support Staff', val: '150+' },
                 ].map((stat, i) => (
                   <div key={i} className="p-6 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-md">
                     <div className="text-2xl font-black text-white mb-1" style={{ fontFamily: 'Poppins' }}>{stat.val}</div>

@@ -43,7 +43,7 @@ export default function AdminLayout() {
     }
   }, [isAuthenticated, authRole, authLoading, navigate]);
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); navigate('/login', { replace: true }); };
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
   if (authLoading) {

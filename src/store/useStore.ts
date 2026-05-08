@@ -346,11 +346,24 @@ export const useStore = create<AppState>()(
         const formatUrl = (url: string) => url?.startsWith('/uploads') ? `${API_HOST}${url}` : (url || '/logo.png');
         const formatFav = (url: string) => url?.startsWith('/uploads') ? `${API_HOST}${url}` : (url || '/favicon.ico');
 
+        const faviconUrl = formatFav(settings.faviconUrl);
+
+        // Update DOM Favicon
+        const favicon = document.querySelector('link[rel="icon"]');
+        if (favicon) {
+          (favicon as HTMLLinkElement).href = faviconUrl;
+        } else {
+          const newFavicon = document.createElement('link');
+          newFavicon.rel = 'icon';
+          newFavicon.href = faviconUrl;
+          document.head.appendChild(newFavicon);
+        }
+
         set((state) => ({
           settings,
           logoUrl: formatUrl(settings.logoUrl),
           adminLogoUrl: formatUrl(settings.adminLogoUrl),
-          faviconUrl: formatFav(settings.faviconUrl),
+          faviconUrl: faviconUrl,
           heroImageUrl: settings.heroImageUrl?.startsWith('/uploads') ? `${API_HOST}${settings.heroImageUrl}` : (settings.heroImageUrl || state.heroImageUrl),
           sectionImages: {
             ...state.sectionImages,

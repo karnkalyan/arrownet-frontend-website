@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import {
@@ -9,9 +9,13 @@ import {
   Gauge, Cloud, Layers, Activity, TrendingUp,
   CheckCircle, Play, Terminal, Database, ArrowUpRight, Home as HomeIcon,
   ChevronDown, Phone, Mail, Send, Award, Users, Headphones, Building2, Landmark, BookOpen, Tag, User,
-  Wifi
+  Wifi, MessageCircle, Music, Search, Camera
 } from 'lucide-react';
 import { useStore } from '../store/useStore';
+import {
+  FaGoogle, FaYoutube, FaTiktok, FaWhatsapp, FaViber,
+  FaFacebookF, FaInstagram, FaLinkedinIn, FaXTwitter
+} from 'react-icons/fa6';
 import ParticleNetwork from '../components/shared/ParticleNetwork';
 import NetworkBackground from '../components/shared/NetworkBackground';
 import FloatingElements from '../components/shared/FloatingElements';
@@ -125,17 +129,27 @@ function LiveTerminal() {
 
 // ─── HERO ANIMATION (SERVER, ONT, FTTH) ──────────────────────────
 function HeroAnimation() {
+  const containerRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const y1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const y2 = useTransform(scrollYProgress, [0, 1], [0, 150]);
+  const y3 = useTransform(scrollYProgress, [0, 1], [0, -100]);
+
   return (
-    <div className="relative w-full aspect-square flex items-center justify-center overflow-visible">
+    <div ref={containerRef} className="relative w-full aspect-square max-w-[600px] mx-auto flex items-center justify-center overflow-visible">
       {/* Background Glows */}
       <div className="absolute inset-0 z-0">
         <motion.div
           animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.15, 0.25, 0.15],
+            scale: [1, 1.3, 1],
+            opacity: [0.2, 0.35, 0.2],
           }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[140%] h-[140%] bg-gradient-to-tr from-primary/30 via-transparent to-blue-500/20 blur-[120px] rounded-full"
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[160%] h-[160%] bg-gradient-to-tr from-primary/40 via-transparent to-blue-500/20 blur-[140px] rounded-full"
         />
       </div>
 
@@ -152,33 +166,33 @@ function HeroAnimation() {
 
           {/* Dynamic Data Flows */}
           {[
-            "M 80 120 Q 200 120 200 200",
-            "M 320 120 Q 200 120 200 200",
-            "M 80 280 Q 200 280 200 200",
-            "M 320 280 Q 200 280 200 200"
+            "M 60 100 Q 200 100 200 200",
+            "M 340 100 Q 200 100 200 200",
+            "M 60 300 Q 200 300 200 200",
+            "M 340 300 Q 200 300 200 200"
           ].map((path, i) => (
             <React.Fragment key={i}>
               <motion.path
                 d={path}
                 fill="none"
-                stroke="rgba(227,6,19,0.08)"
-                strokeWidth="2"
-                strokeDasharray="4 4"
+                stroke="rgba(227,6,19,0.1)"
+                strokeWidth="2.5"
+                strokeDasharray="5 5"
               />
               <motion.circle
-                r="3"
+                r="4"
                 fill="var(--primary)"
                 initial={{ offsetDistance: "0%" }}
                 animate={{ offsetDistance: "100%" }}
                 transition={{
-                  duration: 3 + i,
+                  duration: 4 + i,
                   repeat: Infinity,
                   ease: "linear",
                   delay: i * 0.5
                 }}
                 style={{
                   offsetPath: `path('${path}')`,
-                  filter: 'drop-shadow(0 0 6px var(--primary))'
+                  filter: 'drop-shadow(0 0 8px var(--primary))'
                 }}
               />
             </React.Fragment>
@@ -187,10 +201,17 @@ function HeroAnimation() {
 
         {/* Social Icons Orbit */}
         {[
-          { icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>, color: '#1877F2', radius: 140, speed: 20, delay: 0 },
-          { icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>, color: '#E4405F', radius: 140, speed: 20, delay: 5 },
-          { icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>, color: '#0A66C2', radius: 180, speed: 25, delay: 2 },
-          { icon: <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.045 4.126H5.078z" /></svg>, color: '#000000', radius: 180, speed: 25, delay: 10 }
+          { icon: <FaGoogle size={48} />, color: '#4285F4', radius: 180, speed: 25, delay: 0, yMotion: y1 },
+          { icon: <FaYoutube size={48} />, color: '#FF0000', radius: 180, speed: 25, delay: 8.33, yMotion: y2 },
+          { icon: <FaTiktok size={48} />, color: '#000000', radius: 180, speed: 25, delay: 16.66, yMotion: y3 },
+
+          { icon: <FaWhatsapp size={48} />, color: '#25D366', radius: 270, speed: 35, delay: 4, yMotion: y1 },
+          { icon: <FaViber size={48} />, color: '#7360f2', radius: 270, speed: 35, delay: 15.66, yMotion: y2 },
+          { icon: <FaFacebookF size={48} />, color: '#1877F2', radius: 270, speed: 35, delay: 27.33, yMotion: y3 },
+
+          { icon: <FaInstagram size={48} />, color: '#E4405F', radius: 360, speed: 45, delay: 10, yMotion: y1 },
+          { icon: <FaLinkedinIn size={48} />, color: '#0077B5', radius: 360, speed: 45, delay: 25, yMotion: y2 },
+          { icon: <FaXTwitter size={48} />, color: '#000000', radius: 360, speed: 45, delay: 40, yMotion: y3 },
         ].map((s, i) => (
           <motion.div
             key={i}
@@ -202,13 +223,14 @@ function HeroAnimation() {
             <motion.div
               animate={{
                 rotate: -360,
-                y: [0, -12, 0]
+                y: [0, -18, 0]
               }}
+              style={{ y: s.yMotion }}
               transition={{
                 rotate: { duration: s.speed, repeat: Infinity, ease: "linear", delay: -s.delay },
-                y: { duration: 3, repeat: Infinity, ease: "easeInOut", delay: i * 0.7 }
+                y: { duration: 4, repeat: Infinity, ease: "easeInOut", delay: i * 0.9 }
               }}
-              className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-16 h-16 rounded-2xl bg-white shadow-2xl flex items-center justify-center border border-slate-100 cursor-pointer hover:scale-110 transition-transform"
+              className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-[32px] bg-white shadow-2xl flex items-center justify-center border border-slate-100 cursor-pointer hover:scale-110 transition-all p-5"
               style={{ color: s.color }}
             >
               {s.icon}
@@ -219,15 +241,13 @@ function HeroAnimation() {
         {/* Central Arrownet Label */}
         <div className="relative z-10 flex flex-col items-center">
           <motion.div
-            animate={{ scale: [0.95, 1.05, 0.95] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="text-2xl md:text-2xl font-bold text-primary tracking-tighter"
-            style={{ fontFamily: 'Poppins, sans-serif' }}
+            animate={{ scale: [0.98, 1.02, 0.98] }}
+            transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            className="w-56 md:w-64 h-auto"
           >
-            Arrow
-            <span className="text-red-500">net</span>
+            <img src="/arrownet.png" alt="Arrownet" className="w-full h-auto object-contain" />
           </motion.div>
-          <div className="w-20 h-1.5 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full mt-3" />
+          <div className="w-28 h-2 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full mt-8 opacity-60" />
         </div>
       </div>
     </div>
@@ -1328,7 +1348,7 @@ export default function Home() {
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-red-500">The Edge</span>
               </div>
               <h2 className="text-5xl font-black text-slate-900 mb-6 leading-tight tracking-tight" style={{ fontFamily: 'Poppins, sans-serif' }}>
-                Why Leading Enterprises<br />Choose <span className="text-primary">Arrownet.</span>
+                Why Leading Enterprises<br />Choose <span className="text-primary">Arrow</span><span className="text-secondary">Net.</span>
               </h2>
               <p className="text-lg text-slate-500 font-medium leading-relaxed mb-10">{cms.aboutSection.description}</p>
               <div className="grid grid-cols-2 gap-8 mb-10">
@@ -1403,7 +1423,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 text-[10px] font-black uppercase tracking-widest text-primary mb-6">
               <Award size={14} /> Why Arrownet
             </div>
-            <h2 className="text-fluid-h2 font-black text-slate-900 mb-6" style={{ fontFamily: 'Poppins' }}>Why Choose <span className="text-primary">Arrownet?</span></h2>
+            <h2 className="text-fluid-h2 font-black text-slate-900 mb-6" style={{ fontFamily: 'Poppins' }}>Why Choose <span className="text-primary">Arrow</span><span className="text-secondary">Net?</span></h2>
             <p className="text-lg text-slate-500 font-medium">Nepal's premier ISP delivering unmatched speed, reliability, and customer satisfaction since 2008.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

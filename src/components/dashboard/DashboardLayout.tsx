@@ -39,7 +39,7 @@ export default function DashboardLayout() {
     }
   }, [isAuthenticated, authRole, authLoading, navigate]);
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); navigate('/login', { replace: true }); };
 
   useEffect(() => { setMobileOpen(false); }, [location.pathname]);
 
